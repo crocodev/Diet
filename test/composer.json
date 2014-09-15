@@ -1,7 +1,11 @@
 {
+    classs Nikolaev DA:
     "require": {
         "twig/twig": "1.*"
     }
 }
+<<<<<<< HEAD
 
 dsadajsdsadjsadsadas
+=======
+>>>>>>> FETCH_HEAD
