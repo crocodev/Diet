@@ -12,7 +12,20 @@ class InputViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        var foodTableViewController: FoodTableViewController = FoodTableViewController()
+        var foodTableView: FoodTableView = FoodTableView(frame: self.view.frame)
+        foodTableView.delegate = foodTableViewController
+        foodTableView.dataSource = foodTableViewController
+        foodTableViewController.view = foodTableView
+        
+        foodTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
+        
+//        self.addChildViewController(foodTableViewController)
+//        self.view.addSubview(foodTableViewController.view)
+        self.presentViewController(foodTableViewController, animated: true, completion: nil)
+        println (self.presentedViewController.description)
 
+        
         // Do any additional setup after loading the view.
     }
 
