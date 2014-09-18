@@ -38,13 +38,15 @@
     [consumptionChart setStrokeColor:PNGreen];
     [consumptionChart strokeChart];
     
-    PNCircleChart * progressChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 80.0, SCREEN_WIDTH, 100.0) andTotal:[NSNumber numberWithInt:100] andCurrent:[NSNumber numberWithInt:60] andClockwise:YES andShadow:YES];
+    PNCircleChart * progressChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(80, 80.0, SCREEN_WIDTH, 100.0) andTotal:[NSNumber numberWithInt:100] andCurrent:[NSNumber numberWithInt:60] andClockwise:YES andShadow:YES];
     progressChart.backgroundColor = [UIColor clearColor];
     [progressChart setStrokeColor:PNGreen];
     [progressChart strokeChart];
     
     [self.view addSubview:consumptionChart];
     [self.view addSubview:progressChart];
+    
+    //
 }
 
 - (void)didReceiveMemoryWarning {

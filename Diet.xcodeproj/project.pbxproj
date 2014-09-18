@@ -56,6 +56,7 @@
 		2437663219CADAD4007A2E40 /* MagicalRecord+Setup.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661219CADAD4007A2E40 /* MagicalRecord+Setup.m */; };
 		2437663319CADAD4007A2E40 /* MagicalRecord+ShorthandSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661419CADAD4007A2E40 /* MagicalRecord+ShorthandSupport.m */; };
 		2437663419CADAD4007A2E40 /* MagicalRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661619CADAD4007A2E40 /* MagicalRecord.m */; };
+		2437663819CAE0C4007A2E40 /* ZenKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437663719CAE0C4007A2E40 /* ZenKeyboard.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +174,8 @@
 		2437661819CADAD4007A2E40 /* MagicalRecordLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagicalRecordLogging.h; sourceTree = "<group>"; };
 		2437661919CADAD4007A2E40 /* MagicalRecordShorthand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagicalRecordShorthand.h; sourceTree = "<group>"; };
 		2437661A19CADAD4007A2E40 /* CoreData+MagicalRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CoreData+MagicalRecord.h"; sourceTree = "<group>"; };
+		2437663619CAE0C4007A2E40 /* ZenKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZenKeyboard.h; sourceTree = "<group>"; };
+		2437663719CAE0C4007A2E40 /* ZenKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZenKeyboard.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -337,6 +340,7 @@
 		2437658319CACEA2007A2E40 /* 3 part libs */ = {
 			isa = PBXGroup;
 			children = (
+				2437663519CAE0C4007A2E40 /* ZenKeyboard */,
 				243765DD19CADAD4007A2E40 /* MagicalRecord */,
 				2437658219CACE8A007A2E40 /* UICountingLabel */,
 				2437655E19CACAF7007A2E40 /* PNChart */,
@@ -447,6 +451,15 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		2437663519CAE0C4007A2E40 /* ZenKeyboard */ = {
+			isa = PBXGroup;
+			children = (
+				2437663619CAE0C4007A2E40 /* ZenKeyboard.h */,
+				2437663719CAE0C4007A2E40 /* ZenKeyboard.m */,
+			);
+			path = ZenKeyboard;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -555,6 +568,7 @@
 				2437662919CADAD4007A2E40 /* NSManagedObjectContext+MagicalSaves.m in Sources */,
 				2437662319CADAD4007A2E40 /* NSManagedObject+MagicalDataImport.m in Sources */,
 				2437654D19CAAAB3007A2E40 /* InputViewController.m in Sources */,
+				2437663819CAE0C4007A2E40 /* ZenKeyboard.m in Sources */,
 				2437662C19CADAD4007A2E40 /* NSPersistentStore+MagicalRecord.m in Sources */,
 				24047ECE19CAA8E500521269 /* Diet.xcdatamodeld in Sources */,
 				2437655719CAAB7D007A2E40 /* FoodTableViewController.m in Sources */,
