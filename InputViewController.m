@@ -8,6 +8,7 @@
 
 #import "InputViewController.h"
 #import "PNCircleChart.h"
+#import "ZenKeyboard.h"
 
 @interface InputViewController ()
 
@@ -46,7 +47,19 @@
     [self.view addSubview:consumptionChart];
     [self.view addSubview:progressChart];
     
-    //
+    // Добавляю клавиатуру
+    
+    UILabel* label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
+    label.backgroundColor = [UIColor grayColor];
+    [self.view addSubview:label];
+    
+    
+    ZenKeyboard * keyboard = [[ZenKeyboard alloc] initWithFrame: self.view.frame];
+    [self.view addSubview:keyboard];
+    
+    keyboard.label = label;
+    label.text = @"";
+    
 }
 
 - (void)didReceiveMemoryWarning {

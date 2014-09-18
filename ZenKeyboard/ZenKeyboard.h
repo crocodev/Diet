@@ -10,6 +10,7 @@
 
 #define KEYBOARD_NUMERIC_KEY_WIDTH 108
 #define KEYBOARD_NUMERIC_KEY_HEIGHT 53
+#define kMaxNumber 100000
 
 @protocol ZenKeyboardDelegate <NSObject>
 
@@ -20,6 +21,6 @@
 
 @interface ZenKeyboard : UIView
 
-@property (nonatomic, assign) UITextField *textField;
+@property (nonatomic, assign) UILabel *label;
 
 @end
