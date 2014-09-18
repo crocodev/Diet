@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2431CC8019C83C0000252020"
+               BlueprintIdentifier = "24047EC119CAA8E400521269"
                BuildableName = "Diet.app"
                BlueprintName = "Diet"
                ReferencedContainer = "container:Diet.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2431CC9519C83C0000252020"
+               BlueprintIdentifier = "24047EDA19CAA8E500521269"
                BuildableName = "DietTests.xctest"
                BlueprintName = "DietTests"
                ReferencedContainer = "container:Diet.xcodeproj">
@@ -42,7 +42,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2431CC8019C83C0000252020"
+            BlueprintIdentifier = "24047EC119CAA8E400521269"
             BuildableName = "Diet.app"
             BlueprintName = "Diet"
             ReferencedContainer = "container:Diet.xcodeproj">
@@ -61,7 +61,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2431CC8019C83C0000252020"
+            BlueprintIdentifier = "24047EC119CAA8E400521269"
             BuildableName = "Diet.app"
             BlueprintName = "Diet"
             ReferencedContainer = "container:Diet.xcodeproj">
@@ -79,7 +79,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2431CC8019C83C0000252020"
+            BlueprintIdentifier = "24047EC119CAA8E400521269"
             BuildableName = "Diet.app"
             BlueprintName = "Diet"
             ReferencedContainer = "container:Diet.xcodeproj">
