@@ -16,9 +16,9 @@
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (assign, nonatomic) CGFloat alphaStep;
-@property (strong, nonatomic) UIImageView *foodIV;
-@property (strong, nonatomic) UIImageView *weightIV;
+@property (strong, nonatomic) UIImageView *foodView;
+@property (strong, nonatomic) UIImageView *weightView;
 @property (strong, nonatomic) ZenKeyboard * keyboard;
-
+@property (strong, nonatomic) FoodTableView * foodTableView;
 
 @end

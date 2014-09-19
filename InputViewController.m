@@ -17,6 +17,7 @@
 
 @synthesize keyboard;
 @synthesize alphaStep;
+@synthesize foodTableView;
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -26,17 +27,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
+
     // Добавляю индикатор подэкрана
-    _foodIV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
-    [self.view addSubview: _foodIV];
     
-    _weightIV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
-    [self.view addSubview: _weightIV];
-    _weightIV.alpha =alphaMin;
+    _foodView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
+    [self.view addSubview: _foodView];
     
-    _foodIV.center = CGPointMake(SCREEN_WIDTH/2, 100);
-    _weightIV.center = CGPointMake(_foodIV.center.x+_foodIV.frame.size.width+dBetweenImages, 100);
+    _weightView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
+    [self.view addSubview: _weightView];
+    _weightView.alpha =alphaMin;
+    
+    _foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
+    _weightView.center = CGPointMake(_foodView.center.x+_foodView.frame.size.width+dBetweenImages, 100);
     
     // Добавляю лэйбл ввода данных
     
@@ -63,17 +65,27 @@
     
     // Добавляю таблицу блюд
     
-    FoodTableView * foodTV = [[FoodTableView alloc] initWithFrame: CGRectOffset(self.view.frame, 0, 200)];
-    [foodTV registerClass:[UITableViewCell class] forCellReuseIdentifier:@"reuseID"];
-    foodTV.delegate = self;
-    foodTV.dataSource = self;
+    foodTableView = [[FoodTableView alloc] initWithFrame: CGRectMake(0, 200, SCREEN_WIDTH, 132)];
+    [foodTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"reuseID"];
+    foodTableView.delegate = self;
+    foodTableView.dataSource = self;
+    foodTableView.backgroundColor = [UIColor yellowColor];
+    foodTableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
+    [self.view addSubview:foodTableView];
     
-    [self.view addSubview:foodTV];
+    // Добавляю поиск
     
+    UIButton * searchButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [searchButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
+    [searchButton setTitle:@"!!!" forState:UIControlStateNormal];
+    searchButton.frame = CGRectMake(0, -44, 44, 44);
+    searchButton.backgroundColor = [UIColor redColor];
+    [foodTableView addSubview:searchButton];
+
     
     // Добавляю клавиатуру
     
-    CGRect frame = CGRectOffset(foodTV.frame, SCREEN_WIDTH, 0);
+    CGRect frame = CGRectOffset(foodTableView.frame, SCREEN_WIDTH, 0);
     keyboard = [[ZenKeyboard alloc] initWithFrame: frame];
     keyboard.delegate = self;
     [self.view addSubview:keyboard];
@@ -85,7 +97,16 @@
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
     [self.view addGestureRecognizer:panGR];
     
-    alphaStep = (1-alphaMin) / (_foodIV.frame.size.width+dBetweenImages);
+    alphaStep = (1-alphaMin) / (_foodView.frame.size.width+dBetweenImages);
+}
+
+-(void) viewDidAppear:(BOOL)animated{
+    foodTableView.contentSize = CGSizeMake(foodTableView.contentSize.width, 44*3);
+    [foodTableView setContentOffset:CGPointMake(0, 0) animated:YES];
+}
+
+-(void) search{
+    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
 }
 
 #pragma mark - ZenKeyboardDelegate
@@ -115,7 +136,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseID" forIndexPath:indexPath];
     cell.textLabel.text = @"test";
-    
+    cell.backgroundColor = [UIColor greenColor];
     return cell;
 }
 
@@ -168,45 +189,45 @@
     
     if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
         if (velocity <= 0){
-            if (_foodIV.alpha > alphaMin)
-                _foodIV.alpha -= alphaStep;
-            if (_weightIV.alpha < 1.0)
-                _weightIV.alpha += alphaStep;
-            if ( _foodIV.alpha > alphaMin){
-                _foodIV.frame = CGRectOffset(_foodIV.frame, -1, 0);
-                _weightIV.frame = CGRectOffset(_weightIV.frame, -1, 0);
+            if (_foodView.alpha > alphaMin)
+                _foodView.alpha -= alphaStep;
+            if (_weightView.alpha < 1.0)
+                _weightView.alpha += alphaStep;
+            if ( _foodView.alpha > alphaMin){
+                _foodView.frame = CGRectOffset(_foodView.frame, -1, 0);
+                _weightView.frame = CGRectOffset(_weightView.frame, -1, 0);
             }
         } else {
-            if (_foodIV.alpha < 1.0)
-                _foodIV.alpha += alphaStep;
-            if (_weightIV.alpha > alphaMin)
-                _weightIV.alpha -= alphaStep;
-            if ( _foodIV.alpha < 1.0){
-                _foodIV.frame = CGRectOffset(_foodIV.frame, 1, 0);
-                _weightIV.frame = CGRectOffset(_weightIV.frame, 1, 0);
+            if (_foodView.alpha < 1.0)
+                _foodView.alpha += alphaStep;
+            if (_weightView.alpha > alphaMin)
+                _weightView.alpha -= alphaStep;
+            if ( _foodView.alpha < 1.0){
+                _foodView.frame = CGRectOffset(_foodView.frame, 1, 0);
+                _weightView.frame = CGRectOffset(_weightView.frame, 1, 0);
             }
         }
     }
     
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        if (_foodIV.alpha >= (1-alphaMin)/2 + alphaMin){
+        if (_foodView.alpha >= (1-alphaMin)/2 + alphaMin){
             //Выбрано подменю блюд
             
             [UIView animateWithDuration:0.2 animations:^{
-                _foodIV.center = CGPointMake(SCREEN_WIDTH/2, 100);
-                _weightIV.center = CGPointMake(_foodIV.center.x+_foodIV.frame.size.width+dBetweenImages, 100);
-                _foodIV.alpha = 1.0;
-                _weightIV.alpha = alphaMin;
+                _foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
+                _weightView.center = CGPointMake(_foodView.center.x+_foodView.frame.size.width+dBetweenImages, 100);
+                _foodView.alpha = 1.0;
+                _weightView.alpha = alphaMin;
             }];
             [self hideKeyboard:YES];
         } else {
             //Выбрано подменю веса
             
             [UIView animateWithDuration:0.2 animations:^{
-                _weightIV.center = CGPointMake(SCREEN_WIDTH/2, 100);
-                _foodIV.center =CGPointMake(_weightIV.center.x-_foodIV.frame.size.width-dBetweenImages, 100);
-                _foodIV.alpha = alphaMin;
-                _weightIV.alpha = 1.0;
+                _weightView.center = CGPointMake(SCREEN_WIDTH/2, 100);
+                _foodView.center =CGPointMake(_weightView.center.x-_foodView.frame.size.width-dBetweenImages, 100);
+                _foodView.alpha = alphaMin;
+                _weightView.alpha = 1.0;
             }];
             [self hideKeyboard:NO];
         }
