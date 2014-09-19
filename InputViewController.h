@@ -10,9 +10,15 @@
 #import "FoodTableView.h"
 #import "ZenKeyboard.h"
 
+#define alphaMin 0.4
+#define dBetweenImages 10.0
+
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) UIImageView *foodI;
-@property (strong, nonatomic) UIImageView *weightI;
+@property (assign, nonatomic) CGFloat alphaStep;
+@property (strong, nonatomic) UIImageView *foodIV;
+@property (strong, nonatomic) UIImageView *weightIV;
+@property (strong, nonatomic) ZenKeyboard * keyboard;
+
 
 @end

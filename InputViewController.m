@@ -15,6 +15,9 @@
 
 @implementation InputViewController
 
+@synthesize keyboard;
+@synthesize alphaStep;
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -25,13 +28,15 @@
     
     
     // Добавляю индикатор подэкрана
-    _weightI = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Weight"]];
-    [self.view addSubview: _weightI];
+    _foodIV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
+    [self.view addSubview: _foodIV];
     
-    _foodI = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Spoon and Fork"]];
-    [self.view addSubview: _foodI];
+    _weightIV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
+    [self.view addSubview: _weightIV];
+    _weightIV.alpha =alphaMin;
     
-    _weightI.frame = CGRectOffset(_weightI.frame, _foodI.frame.size.width + _foodI.frame.origin.x, 0);
+    _foodIV.center = CGPointMake(SCREEN_WIDTH/2, 100);
+    _weightIV.center = CGPointMake(_foodIV.center.x+_foodIV.frame.size.width+dBetweenImages, 100);
     
     // Добавляю лэйбл ввода данных
     
@@ -56,14 +61,6 @@
     [self.view addSubview:progressChart];
     
     
-    // Добавляю клавиатуру
-    
-    ZenKeyboard * keyboard = [[ZenKeyboard alloc] initWithFrame: self.view.frame];
-    keyboard.delegate = self;
-    [self.view addSubview:keyboard];
-    keyboard.label = label;
-    
-    
     // Добавляю таблицу блюд
     
     FoodTableView * foodTV = [[FoodTableView alloc] initWithFrame: CGRectOffset(self.view.frame, 0, 200)];
@@ -74,12 +71,21 @@
     [self.view addSubview:foodTV];
     
     
+    // Добавляю клавиатуру
+    
+    CGRect frame = CGRectOffset(foodTV.frame, SCREEN_WIDTH, 0);
+    keyboard = [[ZenKeyboard alloc] initWithFrame: frame];
+    keyboard.delegate = self;
+    [self.view addSubview:keyboard];
+    keyboard.label = label;
+    
+    
     // Добавляю распознаватель жестов для перехода между подэкранами
     
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
     [self.view addGestureRecognizer:panGR];
     
-    
+    alphaStep = (1-alphaMin) / (_foodIV.frame.size.width+dBetweenImages);
 }
 
 #pragma mark - ZenKeyboardDelegate
@@ -151,29 +157,67 @@
 #pragma  - Gesture recognizer
 
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
-    float translation = [gestureRecognizer translationInView:self.view].x;
+//    float translation = [gestureRecognizer translationInView:self.view].x;
+    float velocity = [gestureRecognizer velocityInView:self.view].x;
+
     
     
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        // инициализация переменных
+
     }
     
     if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
-        if (translation <= 0 ){
-            _foodI.alpha = 1/fabsf(translation);
+        if (velocity <= 0){
+            if (_foodIV.alpha > alphaMin)
+                _foodIV.alpha -= alphaStep;
+            if (_weightIV.alpha < 1.0)
+                _weightIV.alpha += alphaStep;
+            if ( _foodIV.alpha > alphaMin){
+                _foodIV.frame = CGRectOffset(_foodIV.frame, -1, 0);
+                _weightIV.frame = CGRectOffset(_weightIV.frame, -1, 0);
+            }
         } else {
-            _weightI.alpha = 1/fabsf(translation);
+            if (_foodIV.alpha < 1.0)
+                _foodIV.alpha += alphaStep;
+            if (_weightIV.alpha > alphaMin)
+                _weightIV.alpha -= alphaStep;
+            if ( _foodIV.alpha < 1.0){
+                _foodIV.frame = CGRectOffset(_foodIV.frame, 1, 0);
+                _weightIV.frame = CGRectOffset(_weightIV.frame, 1, 0);
+            }
         }
-        
-        _foodI.frame = CGRectOffset(_foodI.frame, translation/20, 0);
-        _weightI.frame = CGRectOffset(_weightI.frame, translation/20, 0);
     }
     
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        // проверка на необходимость перехода на другой подэкран
+        if (_foodIV.alpha >= (1-alphaMin)/2 + alphaMin){
+            //Выбрано подменю блюд
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                _foodIV.center = CGPointMake(SCREEN_WIDTH/2, 100);
+                _weightIV.center = CGPointMake(_foodIV.center.x+_foodIV.frame.size.width+dBetweenImages, 100);
+                _foodIV.alpha = 1.0;
+                _weightIV.alpha = alphaMin;
+            }];
+            [self hideKeyboard:YES];
+        } else {
+            //Выбрано подменю веса
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                _weightIV.center = CGPointMake(SCREEN_WIDTH/2, 100);
+                _foodIV.center =CGPointMake(_weightIV.center.x-_foodIV.frame.size.width-dBetweenImages, 100);
+                _foodIV.alpha = alphaMin;
+                _weightIV.alpha = 1.0;
+            }];
+            [self hideKeyboard:NO];
+        }
     }
-
-    NSLog(@"%f", _foodI.alpha);
 }
 
+-(void) hideKeyboard: (BOOL) hide{
+    if (hide){
+        keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+    } else {
+        keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+    }
+}
 @end
