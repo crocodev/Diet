@@ -21,6 +21,7 @@
 
 @interface ZenKeyboard : UIView
 
+@property (nonatomic, assign) id <ZenKeyboardDelegate> delegate;
 @property (nonatomic, assign) UILabel *label;
 
 @end

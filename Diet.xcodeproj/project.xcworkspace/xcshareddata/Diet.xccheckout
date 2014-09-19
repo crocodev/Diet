@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>2C7A5E6A-D3B9-4796-A0DF-7391AB55ADB4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Diet</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>957012C91DEE8100D476488AECDA07E572B82E3F</key>
+		<string>https://github.com/crocodev/Diet.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Diet.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>957012C91DEE8100D476488AECDA07E572B82E3F</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/crocodev/Diet.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>957012C91DEE8100D476488AECDA07E572B82E3F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>957012C91DEE8100D476488AECDA07E572B82E3F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Diet</string>
+		</dict>
+	</array>
+</dict>
+</plist>

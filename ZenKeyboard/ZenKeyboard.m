@@ -102,6 +102,7 @@
                 break;
         }
     }
+    [_delegate numericKeyDidPressed:key];
 }
 
 - (void)pressBackspaceKey {
@@ -109,6 +110,7 @@
         _label.text = [_label.text substringToIndex:[_label.text length] - 1];
         if ([_label.text hasSuffix:@","])
             _label.text = [_label.text substringToIndex:[_label.text length] - 1];
+    [_delegate backspaceKeyDidPressed];
 }
 
 

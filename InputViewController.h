@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "FoodTableView.h"
-#import "FoodTableViewController.h"
+#import "ZenKeyboard.h"
 
-@interface InputViewController : UIViewController
+@interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate>
+
+@property (strong, nonatomic) UIImageView *foodI;
+@property (strong, nonatomic) UIImageView *weightI;
 
 @end
