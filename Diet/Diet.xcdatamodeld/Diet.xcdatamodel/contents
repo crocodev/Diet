@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6244" systemVersion="13F34" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Diet" representedClassName="Diet" syncable="YES">
+    <entity name="Diet" syncable="YES">
         <attribute name="aimWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="currentWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="dayPoints" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -10,20 +10,20 @@
         <relationship name="toPointsHistory" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PointsHistory" inverseName="toDiet" inverseEntity="PointsHistory" syncable="YES"/>
         <relationship name="toWeightHistory" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="WeightHistory" inverseName="toDiet" inverseEntity="WeightHistory" syncable="YES"/>
     </entity>
-    <entity name="PointsHistory" representedClassName="PointsHistory" syncable="YES">
+    <entity name="PointsHistory" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="foodName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="points" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <relationship name="toDiet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Diet" inverseName="toPointsHistory" inverseEntity="Diet" syncable="YES"/>
     </entity>
-    <entity name="WeightHistory" representedClassName="WeightHistory" syncable="YES">
+    <entity name="WeightHistory" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="weight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <relationship name="toDiet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Diet" inverseName="toWeightHistory" inverseEntity="Diet" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Diet" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="Diet" positionX="-63" positionY="-18" width="128" height="163"/>
+        <element name="WeightHistory" positionX="-416" positionY="137" width="128" height="88"/>
         <element name="PointsHistory" positionX="-414" positionY="-171" width="128" height="103"/>
-        <element name="WeightHistory" positionX="-416" positionY="137" width="128" height="90"/>
     </elements>
 </model>

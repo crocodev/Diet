@@ -18,9 +18,6 @@
 @synthesize keyboard;
 @synthesize alphaStep;
 @synthesize foodTableView;
-@synthesize searchBar;
-
-#pragma mark - Inicialize
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -78,10 +75,13 @@
     
     // Добавляю поиск
     
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -44, 200, 44)];
-    searchBar.showsCancelButton = YES;
-    searchBar.delegate = self;
-    [foodTableView addSubview:searchBar];
+    UIButton * searchButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [searchButton addTarget:self action:@selector(search) forControlEvents:UIControlEventTouchUpInside];
+    [searchButton setTitle:@"!!!" forState:UIControlStateNormal];
+    searchButton.frame = CGRectMake(0, -44, 44, 44);
+    searchButton.backgroundColor = [UIColor redColor];
+    [foodTableView addSubview:searchButton];
+
     
     // Добавляю клавиатуру
     
@@ -103,6 +103,10 @@
 -(void) viewDidAppear:(BOOL)animated{
     foodTableView.contentSize = CGSizeMake(foodTableView.contentSize.width, 44*3);
     [foodTableView setContentOffset:CGPointMake(0, 0) animated:YES];
+}
+
+-(void) search{
+    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
 }
 
 #pragma mark - ZenKeyboardDelegate
@@ -171,20 +175,13 @@
  }
  */
 
-
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-//    return ;
-//}
-//
-//- (CGFloat)tableView:(UITableView *)tableView
-//    return ;
-//}
-
-
-#pragma mark - Gesture recognizer
+#pragma  - Gesture recognizer
 
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
+//    float translation = [gestureRecognizer translationInView:self.view].x;
     float velocity = [gestureRecognizer velocityInView:self.view].x;
+
+    
     
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
 
@@ -236,34 +233,6 @@
         }
     }
 }
-
-#pragma mark - SearchBarDelegate
-
-- (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-    return YES;
-}
-
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar*)searchBar {
-    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
-    return YES;
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = CGRectMake(0, 200, SCREEN_WIDTH, 132);}];
-    [self.searchBar resignFirstResponder];
-
-    NSLog(@"cancel");
-}
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    CGRect rect = searchBar.frame;
-    rect.origin.y = MIN(0, scrollView.contentOffset.y);
-    searchBar.frame = rect;
-}
-
-
-#pragma mark - Other methods
 
 -(void) hideKeyboard: (BOOL) hide{
     if (hide){
