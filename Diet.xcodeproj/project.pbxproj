@@ -16,11 +16,11 @@
 		241EE90819D08EEA00769E7C /* WeightHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 241EE90719D08EEA00769E7C /* WeightHistory.m */; };
 		241EE90B19D08EEA00769E7C /* Diet.m in Sources */ = {isa = PBXBuildFile; fileRef = 241EE90A19D08EEA00769E7C /* Diet.m */; };
 		241EE90E19D08EEB00769E7C /* PointsHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 241EE90D19D08EEB00769E7C /* PointsHistory.m */; };
+		2427ED9E19D0AEEA000A5D7C /* FoodTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2427ED9D19D0AEE9000A5D7C /* FoodTableView.m */; };
 		2437654719CAAA91007A2E40 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437654619CAAA91007A2E40 /* SettingsViewController.m */; };
 		2437654A19CAAAA5007A2E40 /* AnalyticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437654919CAAAA5007A2E40 /* AnalyticViewController.m */; };
 		2437654D19CAAAB3007A2E40 /* InputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437654C19CAAAB3007A2E40 /* InputViewController.m */; };
 		2437655019CAAAEA007A2E40 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437654F19CAAAEA007A2E40 /* HelpViewController.m */; };
-		2437655A19CAAB95007A2E40 /* FoodTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437655919CAAB95007A2E40 /* FoodTableView.m */; };
 		2437657519CACAF7007A2E40 /* PNBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437656019CACAF7007A2E40 /* PNBar.m */; };
 		2437657619CACAF7007A2E40 /* PNBarChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437656219CACAF7007A2E40 /* PNBarChart.m */; };
 		2437657719CACAF7007A2E40 /* PNChartLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437656619CACAF7007A2E40 /* PNChartLabel.m */; };
@@ -89,6 +89,8 @@
 		241EE90A19D08EEA00769E7C /* Diet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Diet.m; sourceTree = SOURCE_ROOT; };
 		241EE90C19D08EEB00769E7C /* PointsHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PointsHistory.h; path = ../PointsHistory.h; sourceTree = "<group>"; };
 		241EE90D19D08EEB00769E7C /* PointsHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PointsHistory.m; path = ../PointsHistory.m; sourceTree = "<group>"; };
+		2427ED9C19D0AEE9000A5D7C /* FoodTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodTableView.h; sourceTree = "<group>"; };
+		2427ED9D19D0AEE9000A5D7C /* FoodTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodTableView.m; sourceTree = "<group>"; };
 		2437654519CAAA91007A2E40 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		2437654619CAAA91007A2E40 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		2437654819CAAAA5007A2E40 /* AnalyticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticViewController.h; sourceTree = "<group>"; };
@@ -97,8 +99,6 @@
 		2437654C19CAAAB3007A2E40 /* InputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputViewController.m; sourceTree = "<group>"; };
 		2437654E19CAAAEA007A2E40 /* HelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
 		2437654F19CAAAEA007A2E40 /* HelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
-		2437655819CAAB95007A2E40 /* FoodTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodTableView.h; sourceTree = "<group>"; };
-		2437655919CAAB95007A2E40 /* FoodTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodTableView.m; sourceTree = "<group>"; };
 		2437655F19CACAF7007A2E40 /* PNBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBar.h; sourceTree = "<group>"; };
 		2437656019CACAF7007A2E40 /* PNBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBar.m; sourceTree = "<group>"; };
 		2437656119CACAF7007A2E40 /* PNBarChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBarChart.h; sourceTree = "<group>"; };
@@ -294,8 +294,8 @@
 			children = (
 				2437654B19CAAAB3007A2E40 /* InputViewController.h */,
 				2437654C19CAAAB3007A2E40 /* InputViewController.m */,
-				2437655819CAAB95007A2E40 /* FoodTableView.h */,
-				2437655919CAAB95007A2E40 /* FoodTableView.m */,
+				2427ED9C19D0AEE9000A5D7C /* FoodTableView.h */,
+				2427ED9D19D0AEE9000A5D7C /* FoodTableView.m */,
 			);
 			name = Input;
 			sourceTree = "<group>";
@@ -591,6 +591,7 @@
 				2437657919CACAF7007A2E40 /* PNColor.m in Sources */,
 				241EE90819D08EEA00769E7C /* WeightHistory.m in Sources */,
 				2437663019CADAD4007A2E40 /* MagicalRecord+iCloud.m in Sources */,
+				2427ED9E19D0AEEA000A5D7C /* FoodTableView.m in Sources */,
 				2437662E19CADAD4007A2E40 /* MagicalRecord+Actions.m in Sources */,
 				2437661B19CADAD4007A2E40 /* MagicalImportFunctions.m in Sources */,
 				2437662F19CADAD4007A2E40 /* MagicalRecord+ErrorHandling.m in Sources */,
@@ -610,7 +611,6 @@
 				2437657B19CACAF7007A2E40 /* PNLineChartData.m in Sources */,
 				2437661F19CADAD4007A2E40 /* NSObject+MagicalDataImport.m in Sources */,
 				2437658119CACE86007A2E40 /* UICountingLabel.m in Sources */,
-				2437655A19CAAB95007A2E40 /* FoodTableView.m in Sources */,
 				2437661D19CADAD4007A2E40 /* NSEntityDescription+MagicalDataImport.m in Sources */,
 				241EE90B19D08EEA00769E7C /* Diet.m in Sources */,
 				2437662019CADAD4007A2E40 /* NSRelationshipDescription+MagicalDataImport.m in Sources */,

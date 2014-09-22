@@ -9,9 +9,6 @@
 #import "InputViewController.h"
 #import "PNCircleChart.h"
 
-@interface InputViewController ()
-
-@end
 
 @implementation InputViewController
 
@@ -67,21 +64,21 @@
     
     
     // Добавляю таблицу блюд
-    
+
     foodTableView = [[FoodTableView alloc] initWithFrame: CGRectMake(0, 200, SCREEN_WIDTH, 132)];
     [foodTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"reuseID"];
     foodTableView.delegate = self;
     foodTableView.dataSource = self;
     foodTableView.backgroundColor = [UIColor yellowColor];
-    foodTableView.contentInset = UIEdgeInsetsMake(44, 0, 0, 0);
     [self.view addSubview:foodTableView];
     
     // Добавляю поиск
     
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, -44, 200, 44)];
-    searchBar.showsCancelButton = YES;
+    searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(0, 0, SCREEN_WIDTH, 44)];
     searchBar.delegate = self;
-    [foodTableView addSubview:searchBar];
+    searchBar.showsCancelButton = YES;
+    foodTableView.tableHeaderView = searchBar;
+    foodTableView.contentOffset = CGPointMake(0, CGRectGetHeight(searchBar.frame));
     
     // Добавляю клавиатуру
     
@@ -98,12 +95,16 @@
     [self.view addGestureRecognizer:panGR];
     
     alphaStep = (1-alphaMin) / (_foodView.frame.size.width+dBetweenImages);
+    
+    // Добавляю кнопку "Добавить"
+    
+    UIButton *asButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [asButton addTarget:self action: @selector(buttonPushed:) forControlEvents:UIControlEventTouchUpInside];
+    [asButton setTitle:@"Add" forState:UIControlStateNormal];
+    asButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+    [self.view addSubview:asButton];
 }
 
--(void) viewDidAppear:(BOOL)animated{
-    foodTableView.contentSize = CGSizeMake(foodTableView.contentSize.width, 44*3);
-    [foodTableView setContentOffset:CGPointMake(0, 0) animated:YES];
-}
 
 #pragma mark - ZenKeyboardDelegate
 
@@ -237,11 +238,8 @@
     }
 }
 
-#pragma mark - SearchBarDelegate
 
-- (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-    return YES;
-}
+#pragma mark - SearchBarDelegate
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar*)searchBar {
     [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
@@ -251,19 +249,17 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = CGRectMake(0, 200, SCREEN_WIDTH, 132);}];
     [self.searchBar resignFirstResponder];
-
-    NSLog(@"cancel");
-}
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    CGRect rect = searchBar.frame;
-    rect.origin.y = MIN(0, scrollView.contentOffset.y);
-    searchBar.frame = rect;
 }
 
 
 #pragma mark - Other methods
+
+- (void) buttonPushed: (UIButton *) sender{
+    // Внесение данных
+    
+    // Проверки
+    
+}
 
 -(void) hideKeyboard: (BOOL) hide{
     if (hide){
