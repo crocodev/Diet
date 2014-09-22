@@ -13,6 +13,9 @@
 		24047ED419CAA8E500521269 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 24047ED219CAA8E500521269 /* Main.storyboard */; };
 		24047ED619CAA8E500521269 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24047ED519CAA8E500521269 /* Images.xcassets */; };
 		24047EE219CAA8E500521269 /* DietTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 24047EE119CAA8E500521269 /* DietTests.m */; };
+		241EE90819D08EEA00769E7C /* WeightHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 241EE90719D08EEA00769E7C /* WeightHistory.m */; };
+		241EE90B19D08EEA00769E7C /* Diet.m in Sources */ = {isa = PBXBuildFile; fileRef = 241EE90A19D08EEA00769E7C /* Diet.m */; };
+		241EE90E19D08EEB00769E7C /* PointsHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 241EE90D19D08EEB00769E7C /* PointsHistory.m */; };
 		2437654719CAAA91007A2E40 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437654619CAAA91007A2E40 /* SettingsViewController.m */; };
 		2437654A19CAAAA5007A2E40 /* AnalyticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437654919CAAAA5007A2E40 /* AnalyticViewController.m */; };
 		2437654D19CAAAB3007A2E40 /* InputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437654C19CAAAB3007A2E40 /* InputViewController.m */; };
@@ -56,7 +59,6 @@
 		2437663319CADAD4007A2E40 /* MagicalRecord+ShorthandSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661419CADAD4007A2E40 /* MagicalRecord+ShorthandSupport.m */; };
 		2437663419CADAD4007A2E40 /* MagicalRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661619CADAD4007A2E40 /* MagicalRecord.m */; };
 		2437663819CAE0C4007A2E40 /* ZenKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437663719CAE0C4007A2E40 /* ZenKeyboard.m */; };
-		24473C1819D023FA0094A68A /* Entity.m in Sources */ = {isa = PBXBuildFile; fileRef = 24473C1719D023FA0094A68A /* Entity.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +83,12 @@
 		24047EDB19CAA8E500521269 /* DietTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DietTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		24047EE019CAA8E500521269 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		24047EE119CAA8E500521269 /* DietTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DietTests.m; sourceTree = "<group>"; };
+		241EE90619D08EEA00769E7C /* WeightHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeightHistory.h; path = ../WeightHistory.h; sourceTree = "<group>"; };
+		241EE90719D08EEA00769E7C /* WeightHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeightHistory.m; path = ../WeightHistory.m; sourceTree = "<group>"; };
+		241EE90919D08EEA00769E7C /* Diet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Diet.h; sourceTree = SOURCE_ROOT; };
+		241EE90A19D08EEA00769E7C /* Diet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Diet.m; sourceTree = SOURCE_ROOT; };
+		241EE90C19D08EEB00769E7C /* PointsHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PointsHistory.h; path = ../PointsHistory.h; sourceTree = "<group>"; };
+		241EE90D19D08EEB00769E7C /* PointsHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PointsHistory.m; path = ../PointsHistory.m; sourceTree = "<group>"; };
 		2437654519CAAA91007A2E40 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		2437654619CAAA91007A2E40 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		2437654819CAAAA5007A2E40 /* AnalyticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticViewController.h; sourceTree = "<group>"; };
@@ -174,8 +182,6 @@
 		2437661A19CADAD4007A2E40 /* CoreData+MagicalRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CoreData+MagicalRecord.h"; sourceTree = "<group>"; };
 		2437663619CAE0C4007A2E40 /* ZenKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZenKeyboard.h; sourceTree = "<group>"; };
 		2437663719CAE0C4007A2E40 /* ZenKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZenKeyboard.m; sourceTree = "<group>"; };
-		24473C1619D023FA0094A68A /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
-		24473C1719D023FA0094A68A /* Entity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Entity.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,8 +234,12 @@
 				24047ED219CAA8E500521269 /* Main.storyboard */,
 				24047ED519CAA8E500521269 /* Images.xcassets */,
 				24047ECC19CAA8E500521269 /* Diet.xcdatamodeld */,
-				24473C1619D023FA0094A68A /* Entity.h */,
-				24473C1719D023FA0094A68A /* Entity.m */,
+				241EE90C19D08EEB00769E7C /* PointsHistory.h */,
+				241EE90D19D08EEB00769E7C /* PointsHistory.m */,
+				241EE90919D08EEA00769E7C /* Diet.h */,
+				241EE90A19D08EEA00769E7C /* Diet.m */,
+				241EE90619D08EEA00769E7C /* WeightHistory.h */,
+				241EE90719D08EEA00769E7C /* WeightHistory.m */,
 				24047EC519CAA8E400521269 /* Supporting Files */,
 			);
 			path = Diet;
@@ -579,6 +589,7 @@
 				2437655019CAAAEA007A2E40 /* HelpViewController.m in Sources */,
 				2437657D19CACAF7007A2E40 /* PNPieChart.m in Sources */,
 				2437657919CACAF7007A2E40 /* PNColor.m in Sources */,
+				241EE90819D08EEA00769E7C /* WeightHistory.m in Sources */,
 				2437663019CADAD4007A2E40 /* MagicalRecord+iCloud.m in Sources */,
 				2437662E19CADAD4007A2E40 /* MagicalRecord+Actions.m in Sources */,
 				2437661B19CADAD4007A2E40 /* MagicalImportFunctions.m in Sources */,
@@ -587,7 +598,6 @@
 				2437657619CACAF7007A2E40 /* PNBarChart.m in Sources */,
 				2437663119CADAD4007A2E40 /* MagicalRecord+Options.m in Sources */,
 				2437654A19CAAAA5007A2E40 /* AnalyticViewController.m in Sources */,
-				24473C1819D023FA0094A68A /* Entity.m in Sources */,
 				2437657819CACAF7007A2E40 /* PNCircleChart.m in Sources */,
 				2437662519CADAD4007A2E40 /* NSManagedObject+MagicalRecord.m in Sources */,
 				2437663219CADAD4007A2E40 /* MagicalRecord+Setup.m in Sources */,
@@ -595,12 +605,14 @@
 				2437662819CADAD4007A2E40 /* NSManagedObjectContext+MagicalRecord.m in Sources */,
 				2437661C19CADAD4007A2E40 /* NSAttributeDescription+MagicalDataImport.m in Sources */,
 				2437654719CAAA91007A2E40 /* SettingsViewController.m in Sources */,
+				241EE90E19D08EEB00769E7C /* PointsHistory.m in Sources */,
 				2437662719CADAD4007A2E40 /* NSManagedObjectContext+MagicalObserving.m in Sources */,
 				2437657B19CACAF7007A2E40 /* PNLineChartData.m in Sources */,
 				2437661F19CADAD4007A2E40 /* NSObject+MagicalDataImport.m in Sources */,
 				2437658119CACE86007A2E40 /* UICountingLabel.m in Sources */,
 				2437655A19CAAB95007A2E40 /* FoodTableView.m in Sources */,
 				2437661D19CADAD4007A2E40 /* NSEntityDescription+MagicalDataImport.m in Sources */,
+				241EE90B19D08EEA00769E7C /* Diet.m in Sources */,
 				2437662019CADAD4007A2E40 /* NSRelationshipDescription+MagicalDataImport.m in Sources */,
 				2437657E19CACAF7007A2E40 /* PNPieChartDataItem.m in Sources */,
 				2437662419CADAD4007A2E40 /* NSManagedObject+MagicalFinders.m in Sources */,
