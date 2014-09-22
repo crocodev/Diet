@@ -13,9 +13,10 @@
 #define alphaMin 0.4
 #define dBetweenImages 10.0
 
-@interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
 @property (assign, nonatomic) CGFloat alphaStep;
+@property (strong, nonatomic) UISearchBar *searchBar;
 @property (strong, nonatomic) UIImageView *foodView;
 @property (strong, nonatomic) UIImageView *weightView;
 @property (strong, nonatomic) ZenKeyboard * keyboard;
