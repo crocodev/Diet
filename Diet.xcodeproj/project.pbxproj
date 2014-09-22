@@ -56,6 +56,7 @@
 		2437663319CADAD4007A2E40 /* MagicalRecord+ShorthandSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661419CADAD4007A2E40 /* MagicalRecord+ShorthandSupport.m */; };
 		2437663419CADAD4007A2E40 /* MagicalRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661619CADAD4007A2E40 /* MagicalRecord.m */; };
 		2437663819CAE0C4007A2E40 /* ZenKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437663719CAE0C4007A2E40 /* ZenKeyboard.m */; };
+		24473C1819D023FA0094A68A /* Entity.m in Sources */ = {isa = PBXBuildFile; fileRef = 24473C1719D023FA0094A68A /* Entity.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +174,8 @@
 		2437661A19CADAD4007A2E40 /* CoreData+MagicalRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CoreData+MagicalRecord.h"; sourceTree = "<group>"; };
 		2437663619CAE0C4007A2E40 /* ZenKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZenKeyboard.h; sourceTree = "<group>"; };
 		2437663719CAE0C4007A2E40 /* ZenKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZenKeyboard.m; sourceTree = "<group>"; };
+		24473C1619D023FA0094A68A /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
+		24473C1719D023FA0094A68A /* Entity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Entity.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +228,8 @@
 				24047ED219CAA8E500521269 /* Main.storyboard */,
 				24047ED519CAA8E500521269 /* Images.xcassets */,
 				24047ECC19CAA8E500521269 /* Diet.xcdatamodeld */,
+				24473C1619D023FA0094A68A /* Entity.h */,
+				24473C1719D023FA0094A68A /* Entity.m */,
 				24047EC519CAA8E400521269 /* Supporting Files */,
 			);
 			path = Diet;
@@ -582,6 +587,7 @@
 				2437657619CACAF7007A2E40 /* PNBarChart.m in Sources */,
 				2437663119CADAD4007A2E40 /* MagicalRecord+Options.m in Sources */,
 				2437654A19CAAAA5007A2E40 /* AnalyticViewController.m in Sources */,
+				24473C1819D023FA0094A68A /* Entity.m in Sources */,
 				2437657819CACAF7007A2E40 /* PNCircleChart.m in Sources */,
 				2437662519CADAD4007A2E40 /* NSManagedObject+MagicalRecord.m in Sources */,
 				2437663219CADAD4007A2E40 /* MagicalRecord+Setup.m in Sources */,
