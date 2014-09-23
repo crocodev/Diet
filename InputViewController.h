@@ -15,10 +15,13 @@
 
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
+
+@property (strong, nonatomic) UILabel * label;
+@property (strong, nonatomic) NSArray * foods;
 @property (assign, nonatomic) CGFloat alphaStep;
-@property (strong, nonatomic) UISearchBar *searchBar;
-@property (strong, nonatomic) UIImageView *foodView;
-@property (strong, nonatomic) UIImageView *weightView;
+@property (strong, nonatomic) UISearchBar * searchBar;
+@property (strong, nonatomic) UIImageView * foodView;
+@property (strong, nonatomic) UIImageView * weightView;
 @property (strong, nonatomic) ZenKeyboard * keyboard;
 @property (strong, nonatomic) FoodTableView * foodTableView;
 

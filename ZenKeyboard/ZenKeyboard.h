@@ -13,7 +13,7 @@
 #define kMaxNumber 100000
 
 @protocol ZenKeyboardDelegate <NSObject>
-
+- (void) chanheLabelTextTo:(NSString *) string bySender: (id) sender;
 - (void)numericKeyDidPressed:(int)key;
 - (void)backspaceKeyDidPressed;
 

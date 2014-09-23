@@ -59,6 +59,7 @@
 		2437663319CADAD4007A2E40 /* MagicalRecord+ShorthandSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661419CADAD4007A2E40 /* MagicalRecord+ShorthandSupport.m */; };
 		2437663419CADAD4007A2E40 /* MagicalRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437661619CADAD4007A2E40 /* MagicalRecord.m */; };
 		2437663819CAE0C4007A2E40 /* ZenKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437663719CAE0C4007A2E40 /* ZenKeyboard.m */; };
+		243DA59819D16F80005A3B51 /* Food.plist in Resources */ = {isa = PBXBuildFile; fileRef = 243DA59719D16F80005A3B51 /* Food.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -182,6 +183,7 @@
 		2437661A19CADAD4007A2E40 /* CoreData+MagicalRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CoreData+MagicalRecord.h"; sourceTree = "<group>"; };
 		2437663619CAE0C4007A2E40 /* ZenKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZenKeyboard.h; sourceTree = "<group>"; };
 		2437663719CAE0C4007A2E40 /* ZenKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZenKeyboard.m; sourceTree = "<group>"; };
+		243DA59719D16F80005A3B51 /* Food.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Food.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,6 +235,7 @@
 				243765DC19CAD7AF007A2E40 /* PrefixHeader.pch */,
 				24047ED219CAA8E500521269 /* Main.storyboard */,
 				24047ED519CAA8E500521269 /* Images.xcassets */,
+				243DA59719D16F80005A3B51 /* Food.plist */,
 				24047ECC19CAA8E500521269 /* Diet.xcdatamodeld */,
 				241EE90C19D08EEB00769E7C /* PointsHistory.h */,
 				241EE90D19D08EEB00769E7C /* PointsHistory.m */,
@@ -551,6 +554,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24047ED419CAA8E500521269 /* Main.storyboard in Resources */,
+				243DA59819D16F80005A3B51 /* Food.plist in Resources */,
 				24047ED619CAA8E500521269 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

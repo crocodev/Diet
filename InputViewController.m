@@ -16,6 +16,9 @@
 @synthesize alphaStep;
 @synthesize foodTableView;
 @synthesize searchBar;
+@synthesize foods;
+@synthesize label;
+
 
 #pragma mark - Inicialize
 
@@ -42,7 +45,7 @@
     
     // Добавляю лэйбл ввода данных
     
-    UILabel* label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
+    label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
     label.backgroundColor = [UIColor grayColor];
     label.text = @"";
     [self.view addSubview:label];
@@ -65,11 +68,12 @@
     
     // Добавляю таблицу блюд
 
-    foodTableView = [[FoodTableView alloc] initWithFrame: CGRectMake(0, 200, SCREEN_WIDTH, 132)];
+    foodTableView = [[FoodTableView alloc] initWithFrame: CGRectMake(0, 200, SCREEN_WIDTH,[UIScreen mainScreen].bounds.size.height-200-60)];
     [foodTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"reuseID"];
     foodTableView.delegate = self;
     foodTableView.dataSource = self;
     foodTableView.backgroundColor = [UIColor yellowColor];
+    foodTableView.allowsMultipleSelection = YES;
     [self.view addSubview:foodTableView];
     
     // Добавляю поиск
@@ -106,81 +110,35 @@
 }
 
 
-#pragma mark - ZenKeyboardDelegate
-
-- (void) backspaceKeyDidPressed {
-    
-}
-
--(void) numericKeyDidPressed:(int)key{
-    
-}
-
 #pragma mark - UITableViewDelegate and UITableViewDataSource
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    // Return the number of sections.
-    return 1;
+    return [self.foods count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
-    return 2;
+    return [(NSArray*)[[self.foods objectAtIndex:section] objectForKey:@"foods"] count] ;
 }
 
+-(NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    return [[self.foods objectAtIndex:section] objectForKey:@"foodCategory"];
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseID" forIndexPath:indexPath];
-    cell.textLabel.text = @"test";
+    cell.textLabel.text = [[[[self.foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
     cell.backgroundColor = [UIColor greenColor];
     return cell;
 }
 
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    label.text = [[[foodTableView cellForRowAtIndexPath:indexPath] textLabel]text];
+}
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- } else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
-
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-//    return ;
-//}
-//
-//- (CGFloat)tableView:(UITableView *)tableView
-//    return ;
-//}
-
+-(void) tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
 
 #pragma mark - Gesture recognizer
 
@@ -251,8 +209,28 @@
     [self.searchBar resignFirstResponder];
 }
 
+#pragma mark - ZenKeyboardDelegate
+
+-(void) chanheLabelTextTo:(NSString *) string bySender: (id) sender{
+    NSLog(@"%@", string);
+}
+
+- (void)numericKeyDidPressed:(int)key{
+    
+}
+
+- (void)backspaceKeyDidPressed{
+    
+}
 
 #pragma mark - Other methods
+
+-(NSArray *) foods{
+    if (!foods) {
+        foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
+    }
+    return foods;
+}
 
 - (void) buttonPushed: (UIButton *) sender{
     // Внесение данных
@@ -266,6 +244,7 @@
         keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
     } else {
         keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+        [self.view bringSubviewToFront:keyboard];
     }
 }
 @end
