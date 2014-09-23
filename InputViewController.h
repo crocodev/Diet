@@ -15,7 +15,7 @@
 
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
-
+@property (strong, nonatomic) UIButton * button;
 @property (strong, nonatomic) UILabel * label;
 @property (strong, nonatomic) NSArray * foods;
 @property (assign, nonatomic) CGFloat alphaStep;

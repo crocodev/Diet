@@ -12,13 +12,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard;
-@synthesize alphaStep;
-@synthesize foodTableView;
-@synthesize searchBar;
-@synthesize foods;
-@synthesize label;
-
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button;
 
 #pragma mark - Inicialize
 
@@ -30,7 +24,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-
+    // Загрузка блюд
+    
+    [self foods];
+    
     // Добавляю индикатор подэкрана
     
     _foodView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
@@ -90,7 +87,6 @@
     keyboard = [[ZenKeyboard alloc] initWithFrame: frame];
     keyboard.delegate = self;
     [self.view addSubview:keyboard];
-//    keyboard.label = label;
     
     
     // Добавляю распознаватель жестов для перехода между подэкранами
@@ -102,11 +98,11 @@
     
     // Добавляю кнопку "Добавить"
     
-    UIButton *asButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [asButton addTarget:self action: @selector(buttonPushed:) forControlEvents:UIControlEventTouchUpInside];
-    [asButton setTitle:@"Add" forState:UIControlStateNormal];
-    asButton.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
-    [self.view addSubview:asButton];
+    button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button addTarget:self action: @selector(buttonPushed:) forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:@"Add" forState:UIControlStateNormal];
+    button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+    [self.view addSubview:button];
 }
 
 
@@ -114,20 +110,20 @@
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [self.foods count];
+    return [foods count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [(NSArray*)[[self.foods objectAtIndex:section] objectForKey:@"foods"] count] ;
+    return [(NSArray*)[[foods objectAtIndex:section] objectForKey:@"foods"] count] ;
 }
 
 -(NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-    return [[self.foods objectAtIndex:section] objectForKey:@"foodCategory"];
+    return [[foods objectAtIndex:section] objectForKey:@"foodCategory"];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseID" forIndexPath:indexPath];
-    cell.textLabel.text = [[[[self.foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
+    cell.textLabel.text = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
     cell.backgroundColor = [UIColor greenColor];
     return cell;
 }
@@ -199,6 +195,18 @@
 
 #pragma mark - SearchBarDelegate
 
+
+- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+{
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"foodName contains[c] %@", searchText];
+    foods = [foods filteredArrayUsingPredicate:resultPredicate];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    [self filterContentForSearchText:searchText scope:nil];
+    [foodTableView reloadData];
+}
+
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar*)searchBar {
     [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
     return YES;
@@ -217,7 +225,7 @@
     else{
         int i = 0;
         for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
-            i+= [(NSNumber*)[[[[self.foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"] integerValue];
+            i+= [(NSNumber*)[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"] integerValue];
         }
         label.text = [NSString stringWithFormat:@"%i очков", i];
     }
@@ -233,6 +241,7 @@
 }
 
 - (void) buttonPushed: (UIButton *) sender{
+
     // Внесение данных
     
     // Проверки
@@ -242,9 +251,10 @@
 -(void) hideKeyboard: (BOOL) hide{
     if (hide){
         keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+        [button setTitle:@"Add" forState:UIControlStateNormal];
     } else {
         keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
-        [self.view bringSubviewToFront:keyboard];
+        [button setTitle:@"Sub" forState:UIControlStateNormal];
     }
 }
 @end
