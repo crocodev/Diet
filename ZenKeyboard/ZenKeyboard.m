@@ -8,16 +8,14 @@
 
 #import "ZenKeyboard.h"
 
-@interface ZenKeyboard()
-
-@property (nonatomic,assign) id<UITextInput> textInputDelegate;
-
-@end;
 
 @implementation ZenKeyboard
 
+@synthesize text;
+
 - (id)initWithFrame:(CGRect)frame
 {
+    text=@"";
     self = [super initWithFrame:frame]; 
     if (self) {
         [self addSubview:[self addNumericKeyWithTitle:@"1" frame:CGRectMake(0, 1, KEYBOARD_NUMERIC_KEY_WIDTH - 3, KEYBOARD_NUMERIC_KEY_HEIGHT)]];
@@ -52,65 +50,68 @@
     UIImage *buttonPressedImage = [UIImage imageNamed:@"KeyboardNumericEntryKeyPressedTextured"];
     [button setBackgroundImage:buttonPressedImage forState:UIControlStateHighlighted];
     
-    if ([title isEqualToString:@"<"])
-        [button addTarget:self action:@selector(pressBackspaceKey) forControlEvents:UIControlEventTouchUpInside];
-    else
-        [button addTarget:self action:@selector(pressNumericKey:) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(pressNumericKey:) forControlEvents:UIControlEventTouchUpInside];
     
     return button;
 }
 
 - (void)pressNumericKey:(UIButton *)button {
     NSString *keyText = button.titleLabel.text;
+    NSUInteger lengthPreComma = 0;
+    NSUInteger lengthPostComma = 0;
     int key = -1;
     
     if ([@"," isEqualToString:keyText]) {
         key = 10;
+    } else if ([@"<" isEqualToString:keyText]){
+        key = 11;
     } else {
         key = [keyText intValue];
     }
     
-    NSRange dot = [_label.text rangeOfString:@","];
-    NSUInteger length = 0;
-    if (dot.location == NSNotFound)
-        length = _label.text.length;
-    else
-        length = _label.text.length-1;
+    NSRange comma = [text rangeOfString:@","];
+    
+    if (key == 11 || key == 10)
+        ;
+    else if (comma.location == NSNotFound)
+        lengthPreComma = text.length;
+    else{
+        lengthPostComma = text.length - comma.location-1;
+        lengthPreComma = text.length - lengthPostComma;
+    }
 
-    if (length < 4){
+    if ((lengthPreComma < MAX_LENGTH_PRE_COMMA && comma.location == NSNotFound) || (lengthPostComma < MAX_LENGTH_POST_COMMA && comma.location != NSNotFound)){
         switch (key) {
+            case 11:
+                if ([text length] > 0)
+                    text = [text substringToIndex:[text length] - 1];
+                if ([text hasSuffix:@","])
+                    text = [text substringToIndex:[text length] - 1];
+                break;
             case 10:
-                if (length == 0)
-                    _label.text = @"0,";
+                if (text.length == 0)
+                    text = @"0,";
                 else
-                    _label.text = [NSString stringWithFormat:@"%@,", _label.text];
+                    text = [NSString stringWithFormat:@"%@,", text];
                 
                 break;
             case 0:
-                if (_label.text.length ==0){
-                    _label.text = _label.text = [NSString stringWithFormat:@"%d", key];
+                if (text.length == 0){
+                    text = [NSString stringWithFormat:@"%d", key];
                 }
-                else if(dot.location != NSNotFound || ![_label.text hasPrefix:@"0"]) {
-                    _label.text = _label.text = [NSString stringWithFormat:@"%@%d",_label.text, key];
+                else if(comma.location != NSNotFound || ![text hasPrefix:@"0"]) {
+                    text = [NSString stringWithFormat:@"%@%d",text, key];
                 }
                 break;
             default:
-                if (length == 0 || (length == 1 && [_label.text isEqualToString:@"0"]))
-                    _label.text = _label.text = [NSString stringWithFormat:@"%d", key];
+                if (text.length == 0 || [text isEqualToString:@"0"])
+                    text = [NSString stringWithFormat:@"%d", key];
                 else
-                    _label.text = [NSString stringWithFormat:@"%@%d", _label.text, key];
+                    text = [NSString stringWithFormat:@"%@%d", text, key];
                 break;
         }
     }
-    [_delegate numericKeyDidPressed:key];
-}
-
-- (void)pressBackspaceKey {
-    if ([_label.text length] > 0)
-        _label.text = [_label.text substringToIndex:[_label.text length] - 1];
-        if ([_label.text hasSuffix:@","])
-            _label.text = [_label.text substringToIndex:[_label.text length] - 1];
-    [_delegate backspaceKeyDidPressed];
+    [_delegate chanheLabelTextTo: text bySender:self];
 }
 
 

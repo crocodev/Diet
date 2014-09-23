@@ -68,7 +68,7 @@
     
     // Добавляю таблицу блюд
 
-    foodTableView = [[FoodTableView alloc] initWithFrame: CGRectMake(0, 200, SCREEN_WIDTH,[UIScreen mainScreen].bounds.size.height-200-60)];
+    foodTableView = [[FoodTableView alloc] initWithFrame: CGRectMake(0, 200, SCREEN_WIDTH,[UIScreen mainScreen].bounds.size.height-200)];
     [foodTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"reuseID"];
     foodTableView.delegate = self;
     foodTableView.dataSource = self;
@@ -90,7 +90,7 @@
     keyboard = [[ZenKeyboard alloc] initWithFrame: frame];
     keyboard.delegate = self;
     [self.view addSubview:keyboard];
-    keyboard.label = label;
+//    keyboard.label = label;
     
     
     // Добавляю распознаватель жестов для перехода между подэкранами
@@ -133,11 +133,11 @@
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    label.text = [[[foodTableView cellForRowAtIndexPath:indexPath] textLabel]text];
+    [self chanheLabelTextTo:nil bySender:nil];
 }
 
 -(void) tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+    [self chanheLabelTextTo:nil bySender:nil];
 }
 
 #pragma mark - Gesture recognizer
@@ -212,15 +212,15 @@
 #pragma mark - ZenKeyboardDelegate
 
 -(void) chanheLabelTextTo:(NSString *) string bySender: (id) sender{
-    NSLog(@"%@", string);
-}
-
-- (void)numericKeyDidPressed:(int)key{
-    
-}
-
-- (void)backspaceKeyDidPressed{
-    
+    if (sender == keyboard)
+        label.text = [NSString stringWithFormat:@"%@ кг", string];
+    else{
+        int i = 0;
+        for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
+            i+= [(NSNumber*)[[[[self.foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"] integerValue];
+        }
+        label.text = [NSString stringWithFormat:@"%i очков", i];
+    }
 }
 
 #pragma mark - Other methods
