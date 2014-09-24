@@ -14,7 +14,9 @@
 
 @synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button;
 
+
 #pragma mark - Inicialize
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -129,20 +131,88 @@
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [self chanheLabelTextTo:nil bySender:nil];
+    [self changeLabelTextTo:nil bySender:nil];
 }
 
 -(void) tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [self chanheLabelTextTo:nil bySender:nil];
+    [self changeLabelTextTo:nil bySender:nil];
 }
 
+
+#pragma mark - SearchBarDelegate
+
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"ANY foods.foodName CONTAINS[cd] %@", searchText];
+    foods = [foods filteredArrayUsingPredicate:resultPredicate];
+    [foodTableView reloadData];
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar*)searchBar {
+    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
+    return YES;
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = CGRectMake(0, 200, SCREEN_WIDTH, 132);}];
+    [self.searchBar resignFirstResponder];
+}
+
+
+#pragma mark - ZenKeyboardDelegate
+
+
+-(void) changeLabelTextTo:(NSString *) string bySender: (id) sender{
+    if (sender == keyboard)
+        label.text = [NSString stringWithFormat:@"%@ кг", string];
+    else{
+        int i = 0;
+        for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
+            i+= [(NSNumber*)[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"] integerValue];
+        }
+        label.text = [NSString stringWithFormat:@"%i очков", i];
+    }
+}
+
+
+#pragma mark - Other methods
+
+
+-(NSArray *) foods{
+    if (!foods) {
+        foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
+    }
+    return foods;
+}
+
+- (void) buttonPushed: (UIButton *) sender{
+
+    
+    // Внесение данных
+    
+    // Проверки
+    
+}
+
+-(void) hideKeyboard: (BOOL) hide{
+    if (hide){
+        keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+        [button setTitle:@"Add" forState:UIControlStateNormal];
+    } else {
+        keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+        [button setTitle:@"Sub" forState:UIControlStateNormal];
+    }
+}
+
+
 #pragma mark - Gesture recognizer
+
 
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
     float velocity = [gestureRecognizer velocityInView:self.view].x;
     
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-
+        
     }
     
     if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
@@ -192,69 +262,4 @@
     }
 }
 
-
-#pragma mark - SearchBarDelegate
-
-
-- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
-{
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"foodName contains[c] %@", searchText];
-    foods = [foods filteredArrayUsingPredicate:resultPredicate];
-}
-
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-    [self filterContentForSearchText:searchText scope:nil];
-    [foodTableView reloadData];
-}
-
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar*)searchBar {
-    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
-    return YES;
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = CGRectMake(0, 200, SCREEN_WIDTH, 132);}];
-    [self.searchBar resignFirstResponder];
-}
-
-#pragma mark - ZenKeyboardDelegate
-
--(void) chanheLabelTextTo:(NSString *) string bySender: (id) sender{
-    if (sender == keyboard)
-        label.text = [NSString stringWithFormat:@"%@ кг", string];
-    else{
-        int i = 0;
-        for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
-            i+= [(NSNumber*)[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"] integerValue];
-        }
-        label.text = [NSString stringWithFormat:@"%i очков", i];
-    }
-}
-
-#pragma mark - Other methods
-
--(NSArray *) foods{
-    if (!foods) {
-        foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
-    }
-    return foods;
-}
-
-- (void) buttonPushed: (UIButton *) sender{
-
-    // Внесение данных
-    
-    // Проверки
-    
-}
-
--(void) hideKeyboard: (BOOL) hide{
-    if (hide){
-        keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
-        [button setTitle:@"Add" forState:UIControlStateNormal];
-    } else {
-        keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
-        [button setTitle:@"Sub" forState:UIControlStateNormal];
-    }
-}
 @end

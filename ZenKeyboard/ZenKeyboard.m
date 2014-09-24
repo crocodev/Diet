@@ -111,7 +111,7 @@
                 break;
         }
     }
-    [_delegate chanheLabelTextTo: text bySender:self];
+    [_delegate changeLabelTextTo: text bySender:self];
 }
 
 

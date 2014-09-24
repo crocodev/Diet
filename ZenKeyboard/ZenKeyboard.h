@@ -14,7 +14,7 @@
 #define MAX_LENGTH_POST_COMMA 1
 
 @protocol ZenKeyboardDelegate <NSObject>
-- (void) chanheLabelTextTo:(NSString *) string bySender: (id) sender;
+- (void) changeLabelTextTo:(NSString *) string bySender: (id) sender;
 @end
 
 @interface ZenKeyboard : UIView
