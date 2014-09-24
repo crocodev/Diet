@@ -12,7 +12,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes;
 
 
 #pragma mark - Inicialize
@@ -26,9 +26,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Загрузка блюд
+    // Инициализация переменных
     
     [self foods];
+    onSearchScreen = NO;
     
     // Добавляю индикатор подэкрана
     
@@ -37,12 +38,12 @@
     
     _weightView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
     [self.view addSubview: _weightView];
-    _weightView.alpha =alphaMin;
+    _weightView.alpha =ALPHA_MIN;
     
     _foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
-    _weightView.center = CGPointMake(_foodView.center.x+_foodView.frame.size.width+dBetweenImages, 100);
+    _weightView.center = CGPointMake(_foodView.center.x+_foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
     
-    // Добавляю лэйбл ввода данных
+    // Добавляю лэйбл
     
     label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
     label.backgroundColor = [UIColor grayColor];
@@ -65,9 +66,9 @@
     [self.view addSubview:progressChart];
     
     
-    // Добавляю таблицу блюд
+    // Добавляю таблицу
 
-    foodTableView = [[FoodTableView alloc] initWithFrame: CGRectMake(0, 200, SCREEN_WIDTH,[UIScreen mainScreen].bounds.size.height-200)];
+    foodTableView = [[FoodTableView alloc] initWithFrame: CGRectMake(0, foodTableView_Y, SCREEN_WIDTH,SCREEN_HEIGHT-foodTableView_Y)];
     [foodTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"reuseID"];
     foodTableView.delegate = self;
     foodTableView.dataSource = self;
@@ -96,14 +97,15 @@
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
     [self.view addGestureRecognizer:panGR];
     
-    alphaStep = (1-alphaMin) / (_foodView.frame.size.width+dBetweenImages);
+    alphaStep = (1-ALPHA_MIN) / (_foodView.frame.size.width+D_BETWEEN_IMAGES);
     
-    // Добавляю кнопку "Добавить"
+    // Добавляю кнопку
     
     button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button addTarget:self action: @selector(buttonPushed:) forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Add" forState:UIControlStateNormal];
-    button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+    [button setBackgroundColor: [UIColor grayColor]];
+    button.frame = CGRectMake(0.0, 450.0, SCREEN_WIDTH, 40.0);
     [self.view addSubview:button];
 }
 
@@ -112,26 +114,47 @@
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [foods count];
+    if (onSearchScreen)
+        return 1;
+    else
+        return [foods count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [(NSArray*)[[foods objectAtIndex:section] objectForKey:@"foods"] count] ;
+    if (onSearchScreen)
+        return [foodsForSearch count];
+    else
+        return [(NSArray*)[[foods objectAtIndex:section] objectForKey:@"foods"] count];
 }
 
 -(NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-    return [[foods objectAtIndex:section] objectForKey:@"foodCategory"];
+    if (onSearchScreen)
+        return @"SEARCH";
+    else
+        return [[foods objectAtIndex:section] objectForKey:@"foodCategory"];
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseID" forIndexPath:indexPath];
-    cell.textLabel.text = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
     cell.backgroundColor = [UIColor greenColor];
+    
+    if (onSearchScreen)
+        cell.textLabel.text = [[foodsForSearch objectAtIndex:indexPath.row] objectForKey:@"foodName"];
+    else
+        cell.textLabel.text = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
+    
     return cell;
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    [self changeLabelTextTo:nil bySender:nil];
+    if (onSearchScreen){
+        [selectedRowsIndexPathes addObject:[[foodsForSearch objectAtIndex:indexPath.row] valueForKey:@"indexPath"]];
+        [self hideSearchScreen];
+    }
+    else{
+        [self changeLabelTextTo:nil bySender:nil];
+    }
 }
 
 -(void) tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -143,19 +166,18 @@
 
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"ANY foods.foodName CONTAINS[cd] %@", searchText];
-    foods = [foods filteredArrayUsingPredicate:resultPredicate];
+//    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"ANY foods.foodName CONTAINS[cd] %@", searchText];
+   
     [foodTableView reloadData];
 }
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar*)searchBar {
-    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
+    [self showSearchScreen];
     return YES;
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = CGRectMake(0, 200, SCREEN_WIDTH, 132);}];
-    [self.searchBar resignFirstResponder];
+    [self hideSearchScreen];
 }
 
 
@@ -177,10 +199,29 @@
 
 #pragma mark - Other methods
 
-
 -(NSArray *) foods{
     if (!foods) {
         foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
+        
+        int section = 0;
+        int row = 0;
+        
+        NSMutableArray * buffer = [[NSMutableArray alloc] init];
+        for (NSDictionary * dic in foods){
+            for(NSDictionary * dicc in [dic objectForKey:@"foods"]){
+                
+                NSMutableDictionary * md = [NSMutableDictionary dictionaryWithDictionary:dicc];
+                [md setValue:[NSIndexPath indexPathForItem:row inSection:section] forKey:@"indexPath"];
+                
+                
+                [buffer addObject:[md copy]];
+                row++;
+            }
+            row = 1;
+            section++;
+        }
+        
+        foodsForSearch = [NSArray arrayWithArray:buffer];
     }
     return foods;
 }
@@ -194,15 +235,41 @@
     
 }
 
--(void) hideKeyboard: (BOOL) hide{
-    if (hide){
-        keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
-        [button setTitle:@"Add" forState:UIControlStateNormal];
-    } else {
-        keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
-        [button setTitle:@"Sub" forState:UIControlStateNormal];
-    }
+- (void) showSearchScreen{
+    selectedRowsIndexPathes = [[NSMutableArray alloc] initWithArray:[foodTableView indexPathsForSelectedRows]];
+    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
+    onSearchScreen = YES;
+    [foodTableView reloadData];
+
 }
+
+- (void) hideSearchScreen{
+    [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = CGRectMake(0, foodTableView_Y, SCREEN_WIDTH, SCREEN_HEIGHT-foodTableView_Y);}];
+    onSearchScreen = NO;
+    
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:
+     ^(){
+         for (NSIndexPath * indexPath in selectedRowsIndexPathes){
+             [foodTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+             [self changeLabelTextTo:nil bySender:nil];
+         }
+     }];
+    [foodTableView reloadData];
+    [CATransaction commit];
+}
+
+- (void) showKeybord{
+    keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+    [button setTitle:@"Sub" forState:UIControlStateNormal];
+    [foodTableView reloadData];
+}
+
+- (void) hideKeyboard{
+    keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+    [button setTitle:@"Add" forState:UIControlStateNormal];
+}
+
 
 
 #pragma mark - Gesture recognizer
@@ -217,18 +284,18 @@
     
     if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
         if (velocity <= 0){
-            if (_foodView.alpha > alphaMin)
+            if (_foodView.alpha > ALPHA_MIN)
                 _foodView.alpha -= alphaStep;
             if (_weightView.alpha < 1.0)
                 _weightView.alpha += alphaStep;
-            if ( _foodView.alpha > alphaMin){
+            if ( _foodView.alpha > ALPHA_MIN){
                 _foodView.frame = CGRectOffset(_foodView.frame, -1, 0);
                 _weightView.frame = CGRectOffset(_weightView.frame, -1, 0);
             }
         } else {
             if (_foodView.alpha < 1.0)
                 _foodView.alpha += alphaStep;
-            if (_weightView.alpha > alphaMin)
+            if (_weightView.alpha > ALPHA_MIN)
                 _weightView.alpha -= alphaStep;
             if ( _foodView.alpha < 1.0){
                 _foodView.frame = CGRectOffset(_foodView.frame, 1, 0);
@@ -238,26 +305,26 @@
     }
     
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        if (_foodView.alpha >= (1-alphaMin)/2 + alphaMin){
+        if (_foodView.alpha >= (1-ALPHA_MIN)/2 + ALPHA_MIN){
             //Выбрано подменю блюд
             
             [UIView animateWithDuration:0.2 animations:^{
                 _foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
-                _weightView.center = CGPointMake(_foodView.center.x+_foodView.frame.size.width+dBetweenImages, 100);
+                _weightView.center = CGPointMake(_foodView.center.x+_foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
                 _foodView.alpha = 1.0;
-                _weightView.alpha = alphaMin;
+                _weightView.alpha = ALPHA_MIN;
             }];
-            [self hideKeyboard:YES];
+            [self hideKeyboard];
         } else {
             //Выбрано подменю веса
             
             [UIView animateWithDuration:0.2 animations:^{
                 _weightView.center = CGPointMake(SCREEN_WIDTH/2, 100);
-                _foodView.center =CGPointMake(_weightView.center.x-_foodView.frame.size.width-dBetweenImages, 100);
-                _foodView.alpha = alphaMin;
+                _foodView.center =CGPointMake(_weightView.center.x-_foodView.frame.size.width-D_BETWEEN_IMAGES, 100);
+                _foodView.alpha = ALPHA_MIN;
                 _weightView.alpha = 1.0;
             }];
-            [self hideKeyboard:NO];
+            [self showKeybord];
         }
     }
 }

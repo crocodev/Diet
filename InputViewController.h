@@ -10,14 +10,19 @@
 #import "FoodTableView.h"
 #import "ZenKeyboard.h"
 
-#define alphaMin 0.4
-#define dBetweenImages 10.0
+#define ALPHA_MIN 0.4
+#define D_BETWEEN_IMAGES 10.0
+#define foodTableView_Y 200.0
+#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
+@property (assign, nonatomic) BOOL onSearchScreen;
 @property (strong, nonatomic) UIButton * button;
 @property (strong, nonatomic) UILabel * label;
 @property (strong, nonatomic) NSArray * foods;
+@property (strong, nonatomic) NSMutableArray * selectedRowsIndexPathes;
+@property (strong, nonatomic) NSArray * foodsForSearch;
 @property (assign, nonatomic) CGFloat alphaStep;
 @property (strong, nonatomic) UISearchBar * searchBar;
 @property (strong, nonatomic) UIImageView * foodView;
