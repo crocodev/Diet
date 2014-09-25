@@ -12,7 +12,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen;
 
 
 #pragma mark - Inicialize
@@ -30,6 +30,7 @@
     
     [self foods];
     onSearchScreen = NO;
+    onWeightScreen = NO;
     
     // Добавляю индикатор подэкрана
     
@@ -48,6 +49,7 @@
     label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
     label.backgroundColor = [UIColor grayColor];
     label.text = @"";
+    label.alpha = 0;
     [self.view addSubview:label];
     
     // Добавляю графики
@@ -80,7 +82,6 @@
     
     searchBar = [[UISearchBar alloc] initWithFrame: CGRectMake(0, 0, SCREEN_WIDTH, 44)];
     searchBar.delegate = self;
-    searchBar.showsCancelButton = YES;
     foodTableView.tableHeaderView = searchBar;
     foodTableView.contentOffset = CGPointMake(0, CGRectGetHeight(searchBar.frame));
     
@@ -129,7 +130,7 @@
 
 -(NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     if (onSearchScreen)
-        return @"SEARCH";
+        return nil;
     else
         return [[foods objectAtIndex:section] objectForKey:@"foodCategory"];
     
@@ -166,8 +167,12 @@
 
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-//    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"ANY foods.foodName CONTAINS[cd] %@", searchText];
-   
+    if ([searchText isEqualToString:@""]) {
+        [self foods];
+    }else{
+        NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"foodName CONTAINS[cd] %@", searchText];
+        foodsForSearch = [foodsForSearch filteredArrayUsingPredicate:searchPredicate];
+    }
     [foodTableView reloadData];
 }
 
@@ -185,6 +190,7 @@
 
 
 -(void) changeLabelTextTo:(NSString *) string bySender: (id) sender{
+    label.alpha = 1;
     if (sender == keyboard)
         label.text = [NSString stringWithFormat:@"%@ кг", string];
     else{
@@ -200,29 +206,27 @@
 #pragma mark - Other methods
 
 -(NSArray *) foods{
-    if (!foods) {
-        foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
-        
-        int section = 0;
-        int row = 0;
-        
-        NSMutableArray * buffer = [[NSMutableArray alloc] init];
-        for (NSDictionary * dic in foods){
-            for(NSDictionary * dicc in [dic objectForKey:@"foods"]){
-                
-                NSMutableDictionary * md = [NSMutableDictionary dictionaryWithDictionary:dicc];
-                [md setValue:[NSIndexPath indexPathForItem:row inSection:section] forKey:@"indexPath"];
-                
-                
-                [buffer addObject:[md copy]];
-                row++;
-            }
-            row = 1;
-            section++;
+    foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
+    
+    int section = 0;
+    int row = 0;
+    
+    NSMutableArray * buffer = [[NSMutableArray alloc] init];
+    for (NSDictionary * dic in foods){
+        for(NSDictionary * dicc in [dic objectForKey:@"foods"]){
+            
+            NSMutableDictionary * md = [NSMutableDictionary dictionaryWithDictionary:dicc];
+            [md setValue:[NSIndexPath indexPathForItem:row inSection:section] forKey:@"indexPath"];
+            
+            
+            [buffer addObject:[md copy]];
+            row++;
         }
-        
-        foodsForSearch = [NSArray arrayWithArray:buffer];
+        row = 0;
+        section++;
     }
+    
+    foodsForSearch = [NSArray arrayWithArray:buffer];
     return foods;
 }
 
@@ -236,6 +240,7 @@
 }
 
 - (void) showSearchScreen{
+    searchBar.showsCancelButton = YES;
     selectedRowsIndexPathes = [[NSMutableArray alloc] initWithArray:[foodTableView indexPathsForSelectedRows]];
     [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = self.view.frame;}];
     onSearchScreen = YES;
@@ -244,6 +249,8 @@
 }
 
 - (void) hideSearchScreen{
+    searchBar.showsCancelButton = NO;
+    [searchBar resignFirstResponder];
     [UIView animateWithDuration:0.2 animations:^{foodTableView.frame = CGRectMake(0, foodTableView_Y, SCREEN_WIDTH, SCREEN_HEIGHT-foodTableView_Y);}];
     onSearchScreen = NO;
     
@@ -262,12 +269,22 @@
 - (void) showKeybord{
     keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
     [button setTitle:@"Sub" forState:UIControlStateNormal];
+    if(!onWeightScreen){
+        label.text = @"";
+        label.alpha = 0;
+    }
     [foodTableView reloadData];
+    onWeightScreen = YES;
 }
 
 - (void) hideKeyboard{
     keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
+    if (onWeightScreen) {
+        label.text = @"";
+        label.alpha = 0;
+    }
     [button setTitle:@"Add" forState:UIControlStateNormal];
+    onWeightScreen = NO;
 }
 
 

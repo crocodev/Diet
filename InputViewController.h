@@ -15,8 +15,10 @@
 #define foodTableView_Y 200.0
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
+
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
+@property (assign, nonatomic) BOOL onWeightScreen;
 @property (assign, nonatomic) BOOL onSearchScreen;
 @property (strong, nonatomic) UIButton * button;
 @property (strong, nonatomic) UILabel * label;
