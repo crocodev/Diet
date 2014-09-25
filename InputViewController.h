@@ -16,7 +16,7 @@
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
 
-@interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
+@interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate>
 
 @property (assign, nonatomic) BOOL onWeightScreen;
 @property (assign, nonatomic) BOOL onSearchScreen;
