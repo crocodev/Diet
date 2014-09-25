@@ -12,7 +12,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen;
 
 
 #pragma mark - Inicialize
@@ -25,7 +25,25 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
+    // Инициализация переменных
+    
+    [self foods];
+    onSearchScreen = NO;
+    onWeightScreen = NO;
+    
+    // Добавляю индикатор подэкрана
+    
+    _foodView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
+    [self.view addSubview: _foodView];
+    
+    _weightView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
+    [self.view addSubview: _weightView];
+    _weightView.alpha =ALPHA_MIN;
+    
+    _foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
+    _weightView.center = CGPointMake(_foodView.center.x+_foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
+    
     // Добавляю лэйбл
     
     label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
@@ -36,12 +54,12 @@
     
     // Добавляю графики
     
-    PNCircleChart * consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 40, SCREEN_WIDTH/4, SCREEN_WIDTH/4) andTotal:[NSNumber numberWithInt:100] andCurrent:[NSNumber numberWithInt:60] andClockwise:YES andShadow:YES];
+    PNCircleChart * consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 80.0, SCREEN_WIDTH, 100.0) andTotal:[NSNumber numberWithInt:100] andCurrent:[NSNumber numberWithInt:60] andClockwise:YES andShadow:YES];
     consumptionChart.backgroundColor = [UIColor clearColor];
     [consumptionChart setStrokeColor:PNGreen];
     [consumptionChart strokeChart];
     
-    PNCircleChart * progressChart = [[PNCircleChart alloc] initWithFrame:CGRectOffset(consumptionChart.frame, 115, 0) andTotal:[NSNumber numberWithInt:100] andCurrent:[NSNumber numberWithInt:60] andClockwise:YES andShadow:YES];
+    PNCircleChart * progressChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(80, 80.0, SCREEN_WIDTH, 100.0) andTotal:[NSNumber numberWithInt:100] andCurrent:[NSNumber numberWithInt:60] andClockwise:YES andShadow:YES];
     progressChart.backgroundColor = [UIColor clearColor];
     [progressChart setStrokeColor:PNGreen];
     [progressChart strokeChart];
@@ -74,28 +92,22 @@
     keyboard.delegate = self;
     [self.view addSubview:keyboard];
     
-    // Добавляю индикатор подэкрана
-    
-    foodView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
-    foodView.userInteractionEnabled =YES;
-    [self.view addSubview: foodView];
-    
-    weightView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
-    foodView.userInteractionEnabled =YES;
-    [self.view addSubview: weightView];
-    weightView.alpha =ALPHA_MIN;
-    
-    foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
-    weightView.center = CGPointMake(foodView.center.x+foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
-    
     
     // Добавляю распознаватель жестов для перехода между подэкранами
     
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
-    UITapGestureRecognizer * tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
-    [self.view addGestureRecognizer:panGR];
-    [self.view addGestureRecognizer:tapGR];
+<<<<<<< HEAD
+    UITapGestureRecognizer * tapLeftGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+    UITapGestureRecognizer * tapRightGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
     
+    [self.view addGestureRecognizer:panGR];
+    [foodView addGestureRecognizer:tapLeftGR];
+    [foodView addGestureRecognizer:tapRightGR];
+=======
+    [self.view addGestureRecognizer:panGR];
+>>>>>>> parent of d1050ad... Добавлен TapGestureRecognizer
+    
+    alphaStep = (1-ALPHA_MIN) / (_foodView.frame.size.width+D_BETWEEN_IMAGES);
     
     // Добавляю кнопку
     
@@ -105,13 +117,6 @@
     [button setBackgroundColor: [UIColor grayColor]];
     button.frame = CGRectMake(0.0, 450.0, SCREEN_WIDTH, 40.0);
     [self.view addSubview:button];
-    
-    // Инициализация переменных
-    
-    [self foods];
-    onSearchScreen = NO;
-    onWeightScreen = NO;
-    alphaStep = (1-ALPHA_MIN) / (foodView.frame.size.width+D_BETWEEN_IMAGES);
 }
 
 
@@ -291,25 +296,14 @@
     onWeightScreen = NO;
 }
 
--(void) selectLeftScreen{
-    [UIView animateWithDuration:0.2 animations:^{
-        foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
-        weightView.center = CGPointMake(foodView.center.x+foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
-        foodView.alpha = 1.0;
-        weightView.alpha = ALPHA_MIN;
-    }];
-    [self hideKeyboard];
-}
 
--(void) selectRightScreen{
-    [UIView animateWithDuration:0.2 animations:^{
-        weightView.center = CGPointMake(SCREEN_WIDTH/2, 100);
-        foodView.center =CGPointMake(weightView.center.x-foodView.frame.size.width-D_BETWEEN_IMAGES, 100);
-        foodView.alpha = ALPHA_MIN;
-        weightView.alpha = 1.0;
-    }];
-    [self showKeybord];
-}
+
+#pragma mark - Gesture recognizer
+
+
+
+#pragma mark - Gesture Recognizers
+
 
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
     float velocity = [gestureRecognizer velocityInView:self.view].x;
@@ -320,43 +314,55 @@
     
     if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
         if (velocity <= 0){
-            if (foodView.alpha > ALPHA_MIN)
-                foodView.alpha -= alphaStep;
-            if (weightView.alpha < 1.0)
-                weightView.alpha += alphaStep;
-            if ( foodView.alpha > ALPHA_MIN){
-                foodView.frame = CGRectOffset(foodView.frame, -1, 0);
-                weightView.frame = CGRectOffset(weightView.frame, -1, 0);
+            if (_foodView.alpha > ALPHA_MIN)
+                _foodView.alpha -= alphaStep;
+            if (_weightView.alpha < 1.0)
+                _weightView.alpha += alphaStep;
+            if ( _foodView.alpha > ALPHA_MIN){
+                _foodView.frame = CGRectOffset(_foodView.frame, -1, 0);
+                _weightView.frame = CGRectOffset(_weightView.frame, -1, 0);
             }
         } else {
-            if (foodView.alpha < 1.0)
-                foodView.alpha += alphaStep;
-            if (weightView.alpha > ALPHA_MIN)
-                weightView.alpha -= alphaStep;
-            if ( foodView.alpha < 1.0){
-                foodView.frame = CGRectOffset(foodView.frame, 1, 0);
-                weightView.frame = CGRectOffset(weightView.frame, 1, 0);
+            if (_foodView.alpha < 1.0)
+                _foodView.alpha += alphaStep;
+            if (_weightView.alpha > ALPHA_MIN)
+                _weightView.alpha -= alphaStep;
+            if ( _foodView.alpha < 1.0){
+                _foodView.frame = CGRectOffset(_foodView.frame, 1, 0);
+                _weightView.frame = CGRectOffset(_weightView.frame, 1, 0);
             }
         }
     }
     
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+<<<<<<< HEAD
         if (foodView.alpha >= (1-ALPHA_MIN)/2 + ALPHA_MIN){
-            //Выбрано подменю блюд
             [self selectLeftScreen];
         } else {
+            [self selectRightScreen];
+=======
+        if (_foodView.alpha >= (1-ALPHA_MIN)/2 + ALPHA_MIN){
+            //Выбрано подменю блюд
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                _foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
+                _weightView.center = CGPointMake(_foodView.center.x+_foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
+                _foodView.alpha = 1.0;
+                _weightView.alpha = ALPHA_MIN;
+            }];
+            [self hideKeyboard];
+        } else {
             //Выбрано подменю веса
-            [self selectRightScreen];
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                _weightView.center = CGPointMake(SCREEN_WIDTH/2, 100);
+                _foodView.center =CGPointMake(_weightView.center.x-_foodView.frame.size.width-D_BETWEEN_IMAGES, 100);
+                _foodView.alpha = ALPHA_MIN;
+                _weightView.alpha = 1.0;
+            }];
+            [self showKeybord];
+>>>>>>> parent of d1050ad... Добавлен TapGestureRecognizer
         }
-    }
-}
-
--(void) handleTapGesture:(UITapGestureRecognizer *) gestureRecognizer{
-    if (CGRectContainsPoint(foodView.frame, [gestureRecognizer locationInView:self.view]) || CGRectContainsPoint(weightView.frame, [gestureRecognizer locationInView:self.view])) {
-        if(onWeightScreen)
-            [self selectLeftScreen];
-        else
-            [self selectRightScreen];
     }
 }
 
