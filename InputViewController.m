@@ -92,9 +92,14 @@
     // Добавляю распознаватель жестов для перехода между подэкранами
     
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
-    UITapGestureRecognizer * tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+    UITapGestureRecognizer * tapLeftGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+    UITapGestureRecognizer * tapRightGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+    tapRightGR.delegate = self;
+    tapLeftGR.delegate = self;
     [self.view addGestureRecognizer:panGR];
-    [self.view addGestureRecognizer:tapGR];
+    [foodView addGestureRecognizer:tapLeftGR];
+    [weightView addGestureRecognizer:tapRightGR];
+
     
     
     // Добавляю кнопку
@@ -309,6 +314,13 @@
         weightView.alpha = 1.0;
     }];
     [self showKeybord];
+}
+
+
+#pragma mark - Gesture Recognizers
+
+-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    return YES;
 }
 
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
