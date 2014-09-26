@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class Diet;
 
 @interface WeightHistory : NSManagedObject
 
 @property (nonatomic, retain) NSDate * date;
 @property (nonatomic, retain) NSNumber * weight;
-@property (nonatomic, retain) NSManagedObject *toDiet;
+@property (nonatomic, retain) Diet *toDiet;
 
 @end

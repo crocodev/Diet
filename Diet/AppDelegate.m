@@ -20,7 +20,39 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-
+    
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    NSString * launches = [defaults objectForKey:@"launches"];
+    NSString * viewControlerID = @"";
+    
+    if (![@"1" isEqualToString:launches]) {
+        viewControlerID = @"start";
+        [[NSUserDefaults standardUserDefaults] setValue:@"1" forKey:launches];
+    }
+    else
+        viewControlerID = @"tabbar";
+    
+    
+    self.window = [[UIWindow alloc] initWithFrame: UIScreen.mainScreen.bounds];
+    UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UIViewController * viewController = [storyboard instantiateViewControllerWithIdentifier:viewControlerID];
+    self.window.rootViewController =viewController;
+    [self.window makeKeyAndVisible];
+    
+    
+//    NSEntityDescription * entityDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: self.managedObjectContext];
+//    Diet * diet = [[Diet alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
+//    diet.aimWeight = [NSNumber numberWithFloat:77.7];
+//    [_managedObjectContext save:nil];
+    
+//    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+//    NSEntityDescription * entityDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: self.managedObjectContext];
+//    [fetchRequest setEntity:entityDescription];
+//    
+//    NSArray * array = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+//    Diet * diet = [array objectAtIndex:0];
+//    NSLog(@"%f", [diet.aimWeight floatValue]);
+    
     return YES;
 }
 

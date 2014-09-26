@@ -35,6 +35,7 @@
 		2437663819CAE0C4007A2E40 /* ZenKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2437663719CAE0C4007A2E40 /* ZenKeyboard.m */; };
 		243DA59819D16F80005A3B51 /* Food.plist in Resources */ = {isa = PBXBuildFile; fileRef = 243DA59719D16F80005A3B51 /* Food.plist */; };
 		24A6CBB619D498FC003BE166 /* StartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24A6CBB519D498FC003BE166 /* StartViewController.m */; };
+		24E688A619D5704B00B41772 /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E688A519D5704B00B41772 /* TabBarController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,8 @@
 		243DA59719D16F80005A3B51 /* Food.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Food.plist; sourceTree = "<group>"; };
 		24A6CBB419D498FC003BE166 /* StartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartViewController.h; sourceTree = "<group>"; };
 		24A6CBB519D498FC003BE166 /* StartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartViewController.m; sourceTree = "<group>"; };
+		24E688A419D5704B00B41772 /* TabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
+		24E688A519D5704B00B41772 /* TabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +131,7 @@
 		24047EB919CAA8E400521269 = {
 			isa = PBXGroup;
 			children = (
+				24E688A719D5704F00B41772 /* Tabbar */,
 				24A6CBB319D497D3003BE166 /* Start screen */,
 				2437655119CAAAF6007A2E40 /* Settings screen */,
 				2437655219CAAB06007A2E40 /* Analytic screen */,
@@ -159,10 +163,10 @@
 				24047ED519CAA8E500521269 /* Images.xcassets */,
 				243DA59719D16F80005A3B51 /* Food.plist */,
 				24047ECC19CAA8E500521269 /* Diet.xcdatamodeld */,
-				241EE90C19D08EEB00769E7C /* PointsHistory.h */,
-				241EE90D19D08EEB00769E7C /* PointsHistory.m */,
 				241EE90919D08EEA00769E7C /* Diet.h */,
 				241EE90A19D08EEA00769E7C /* Diet.m */,
+				241EE90C19D08EEB00769E7C /* PointsHistory.h */,
+				241EE90D19D08EEB00769E7C /* PointsHistory.m */,
 				241EE90619D08EEA00769E7C /* WeightHistory.h */,
 				241EE90719D08EEA00769E7C /* WeightHistory.m */,
 				24047EC519CAA8E400521269 /* Supporting Files */,
@@ -300,6 +304,15 @@
 			name = "Start screen";
 			sourceTree = "<group>";
 		};
+		24E688A719D5704F00B41772 /* Tabbar */ = {
+			isa = PBXGroup;
+			children = (
+				24E688A419D5704B00B41772 /* TabBarController.h */,
+				24E688A519D5704B00B41772 /* TabBarController.m */,
+			);
+			name = Tabbar;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -422,6 +435,7 @@
 				241EE90E19D08EEB00769E7C /* PointsHistory.m in Sources */,
 				2437657B19CACAF7007A2E40 /* PNLineChartData.m in Sources */,
 				2437658119CACE86007A2E40 /* UICountingLabel.m in Sources */,
+				24E688A619D5704B00B41772 /* TabBarController.m in Sources */,
 				241EE90B19D08EEA00769E7C /* Diet.m in Sources */,
 				2437657E19CACAF7007A2E40 /* PNPieChartDataItem.m in Sources */,
 			);
