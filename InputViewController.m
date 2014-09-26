@@ -12,7 +12,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, managedObjectContext;
 
 
 #pragma mark - Inicialize
@@ -240,12 +240,22 @@
 }
 
 - (void) buttonPushed: (UIButton *) sender{
+    
+    NSEntityDescription * dietDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: self.managedObjectContext];
+    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:dietDescription];
+    NSArray * result = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    
+    
+    NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: self.managedObjectContext];
+    PointsHistory * pointsHistory = [[PointsHistory alloc] initWithEntity:pointsHistoryDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    pointsHistory.date = [NSDate date];
+    pointsHistory.foodName =[foodTableView cellForRowAtIndexPath:[foodTableView.indexPathsForSelectedRows objectAtIndex:0]].textLabel.text;
+    pointsHistory.points = [NSNumber numberWithInt:3];
+    pointsHistory.toDiet = [result objectAtIndex:0];
 
-    
-    // Внесение данных
-    
-    // Проверки
-    
+
+    [managedObjectContext save:nil];
 }
 
 - (void) showSearchScreen{

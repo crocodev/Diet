@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "InputViewController.h"
 
 @interface TabBarController : UITabBarController
+
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @end

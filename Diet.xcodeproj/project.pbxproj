@@ -131,8 +131,8 @@
 		24047EB919CAA8E400521269 = {
 			isa = PBXGroup;
 			children = (
-				24E688A719D5704F00B41772 /* Tabbar */,
 				24A6CBB319D497D3003BE166 /* Start screen */,
+				24E688A719D5704F00B41772 /* Tabbar */,
 				2437655119CAAAF6007A2E40 /* Settings screen */,
 				2437655219CAAB06007A2E40 /* Analytic screen */,
 				2437655319CAAB18007A2E40 /* Input screen */,

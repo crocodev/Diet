@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "FoodTableView.h"
 #import "ZenKeyboard.h"
+#import "TabBarController.h"
+#import "PointsHistory.h"
+#import "WeightHistory.h"
 
 #define ALPHA_MIN 0.4
 #define D_BETWEEN_IMAGES 10.0
@@ -18,6 +21,7 @@
 
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate>
 
+@property (strong, nonatomic) NSManagedObjectContext * managedObjectContext;
 @property (assign, nonatomic) BOOL onWeightScreen;
 @property (assign, nonatomic) BOOL onSearchScreen;
 @property (strong, nonatomic) UIButton * button;
