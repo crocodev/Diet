@@ -21,6 +21,7 @@
 
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate>
 
+@property (strong, nonatomic) NSNumber * weightToAdd;
 @property (strong, nonatomic) NSManagedObjectContext * managedObjectContext;
 @property (assign, nonatomic) BOOL onWeightScreen;
 @property (assign, nonatomic) BOOL onSearchScreen;

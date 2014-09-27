@@ -12,7 +12,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, managedObjectContext;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, managedObjectContext, weightToAdd;
 
 
 #pragma mark - Inicialize
@@ -92,15 +92,10 @@
     // Добавляю распознаватель жестов для перехода между подэкранами
     
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
-    UITapGestureRecognizer * tapLeftGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
-    UITapGestureRecognizer * tapRightGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
-    tapRightGR.delegate = self;
-    tapLeftGR.delegate = self;
+    UITapGestureRecognizer * tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
     [self.view addGestureRecognizer:panGR];
-    [foodView addGestureRecognizer:tapLeftGR];
-    [weightView addGestureRecognizer:tapRightGR];
+    [self.view addGestureRecognizer:tapGR];
 
-    
     
     // Добавляю кнопку
     
@@ -200,9 +195,10 @@
 
 -(void) changeLabelTextTo:(NSString *) string bySender: (id) sender{
     label.alpha = 1;
-    if (sender == keyboard)
+    if (sender == keyboard){
         label.text = [NSString stringWithFormat:@"%@ кг", string];
-    else{
+        weightToAdd = [NSNumber numberWithFloat:[string floatValue]];
+    } else{
         int i = 0;
         for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
             i+= [(NSNumber*)[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"] integerValue];
@@ -240,22 +236,49 @@
 }
 
 - (void) buttonPushed: (UIButton *) sender{
-    
-    NSEntityDescription * dietDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: self.managedObjectContext];
-    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:dietDescription];
-    NSArray * result = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-    
-    
-    NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: self.managedObjectContext];
-    PointsHistory * pointsHistory = [[PointsHistory alloc] initWithEntity:pointsHistoryDescription insertIntoManagedObjectContext:self.managedObjectContext];
-    pointsHistory.date = [NSDate date];
-    pointsHistory.foodName =[foodTableView cellForRowAtIndexPath:[foodTableView.indexPathsForSelectedRows objectAtIndex:0]].textLabel.text;
-    pointsHistory.points = [NSNumber numberWithInt:3];
-    pointsHistory.toDiet = [result objectAtIndex:0];
-
-
-    [managedObjectContext save:nil];
+    if (![label.text isEqualToString:@""] && label) {
+        
+        // Получение Diet
+        
+        NSEntityDescription * dietDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: self.managedObjectContext];
+        NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+        [fetchRequest setEntity:dietDescription];
+        NSArray * result = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+        
+        // Добавление данных в базу
+        
+        if ([label.text containsString:@"очков"]){
+            for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
+                NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: self.managedObjectContext];
+                PointsHistory * pointsHistory = [[PointsHistory alloc] initWithEntity: pointsHistoryDescription insertIntoManagedObjectContext: self.managedObjectContext];
+                
+                pointsHistory.date = [NSDate date];
+                pointsHistory.foodName =[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
+                pointsHistory.points = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"];
+                pointsHistory.toDiet = [result objectAtIndex:0];
+                
+                [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
+            }
+            label.text = @"";
+            label.alpha = 0;
+        } else {
+            NSEntityDescription * weightHistoryDescription = [NSEntityDescription entityForName:@"WeightHistory" inManagedObjectContext: self.managedObjectContext];
+            WeightHistory * weightHistory = [[WeightHistory alloc] initWithEntity: weightHistoryDescription insertIntoManagedObjectContext: self.managedObjectContext];
+            
+            weightHistory.date = [NSDate date];
+            weightHistory.weight = weightToAdd;
+            weightHistory.toDiet = [result objectAtIndex:0];
+            
+            [self hideKeyboard];
+        }
+        [managedObjectContext save:nil];
+        
+        // Проверка условий
+        
+        
+        
+        
+    }
 }
 
 - (void) showSearchScreen{
@@ -329,9 +352,6 @@
 
 #pragma mark - Gesture Recognizers
 
--(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-    return YES;
-}
 
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
     float velocity = [gestureRecognizer velocityInView:self.view].x;

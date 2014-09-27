@@ -52,10 +52,13 @@
     
     if ([result count] != 0){
         for ( Diet * toDelete in result){
-            NSLog(@"current = %f aim = %f %@", [toDelete.currentWeight floatValue], [toDelete.aimWeight floatValue],toDelete.startDate);
+            NSLog(@"curW = %f aimW = %f  date = %@", [toDelete.currentWeight floatValue], [toDelete.aimWeight floatValue],toDelete.startDate);
             
             PointsHistory * ph = [toDelete.toPointsHistory anyObject];
-            NSLog(@"%@", ph.foodName);
+            NSLog(@"pointsHistory %@", ph.foodName);
+            
+            WeightHistory * wh = [toDelete.toWeightHistory anyObject];
+            NSLog(@"weightHistory %f", [wh.weight floatValue]);
             
             [managedObjectContext deleteObject: toDelete];
         }
