@@ -12,7 +12,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, managedObjectContext, weightToAdd;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, managedObjectContext, weightToAdd, tapGR;
 
 
 #pragma mark - Inicialize
@@ -26,6 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    
     // Добавляю лэйбл
     
     label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
@@ -48,7 +49,6 @@
     
     [self.view addSubview:consumptionChart];
     [self.view addSubview:progressChart];
-    
     
     // Добавляю таблицу
 
@@ -74,6 +74,15 @@
     keyboard.delegate = self;
     [self.view addSubview:keyboard];
     
+    // Добавляю кнопку
+    
+    button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button addTarget:self action: @selector(buttonPushed:) forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:@"Add" forState:UIControlStateNormal];
+    [button setBackgroundColor: [UIColor grayColor]];
+    button.frame = CGRectMake(0.0, 450.0, SCREEN_WIDTH, 40.0);
+    [self.view addSubview:button];
+    
     // Добавляю индикатор подэкрана
     
     foodView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
@@ -81,7 +90,7 @@
     [self.view addSubview: foodView];
     
     weightView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
-    foodView.userInteractionEnabled =YES;
+    weightView.userInteractionEnabled =YES;
     [self.view addSubview: weightView];
     weightView.alpha =ALPHA_MIN;
     
@@ -92,19 +101,12 @@
     // Добавляю распознаватель жестов для перехода между подэкранами
     
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
-    UITapGestureRecognizer * tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+    tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+    tapGR.delegate = self;
     [self.view addGestureRecognizer:panGR];
     [self.view addGestureRecognizer:tapGR];
 
-    
-    // Добавляю кнопку
-    
-    button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button addTarget:self action: @selector(buttonPushed:) forControlEvents:UIControlEventTouchUpInside];
-    [button setTitle:@"Add" forState:UIControlStateNormal];
-    [button setBackgroundColor: [UIColor grayColor]];
-    button.frame = CGRectMake(0.0, 450.0, SCREEN_WIDTH, 40.0);
-    [self.view addSubview:button];
+   
     
     // Инициализация переменных
     
@@ -352,6 +354,14 @@
 
 #pragma mark - Gesture Recognizers
 
+-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    if ((touch.view == foodView || touch.view == weightView) && gestureRecognizer == tapGR)
+        return YES;
+    else{
+        return NO;
+        
+    }
+}
 
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
     float velocity = [gestureRecognizer velocityInView:self.view].x;
