@@ -36,7 +36,6 @@
     self.window = [[UIWindow alloc] initWithFrame: UIScreen.mainScreen.bounds];
     UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController * viewController = [storyboard instantiateViewControllerWithIdentifier:viewControlerID];
-    ((StartViewController *) viewController).managedObjectContext = self.managedObjectContext;
     self.window.rootViewController =viewController;
     [self.window makeKeyAndVisible];
     

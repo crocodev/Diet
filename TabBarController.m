@@ -18,8 +18,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.selectedIndex = 2;
-    InputViewController * inputViewController = [self.viewControllers objectAtIndex:2];
-    inputViewController.managedObjectContext = self.managedObjectContext;
 }
 
 - (void)didReceiveMemoryWarning {

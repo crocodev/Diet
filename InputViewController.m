@@ -12,7 +12,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, managedObjectContext, weightToAdd, tapGR;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, tapGR, diet, managedObjectContext;
 
 
 #pragma mark - Inicialize
@@ -25,7 +25,31 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Инициализация переменных
+    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    NSEntityDescription * dietDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: managedObjectContext];
+    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:dietDescription];
+    diet = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    [self foods];
+    onSearchScreen = NO;
+    onWeightScreen = NO;
+    alphaStep = (1-ALPHA_MIN) / (foodView.frame.size.width+D_BETWEEN_IMAGES);
 
+    // Добавляю индикатор подэкрана
+    
+    foodView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
+    foodView.userInteractionEnabled =YES;
+    [self.view addSubview: foodView];
+    
+    weightView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
+    weightView.userInteractionEnabled =YES;
+    [self.view addSubview: weightView];
+    weightView.alpha =ALPHA_MIN;
+    
+    foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
+    weightView.center = CGPointMake(foodView.center.x+foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
     
     // Добавляю лэйбл
     
@@ -83,21 +107,6 @@
     button.frame = CGRectMake(0.0, 450.0, SCREEN_WIDTH, 40.0);
     [self.view addSubview:button];
     
-    // Добавляю индикатор подэкрана
-    
-    foodView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
-    foodView.userInteractionEnabled =YES;
-    [self.view addSubview: foodView];
-    
-    weightView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
-    weightView.userInteractionEnabled =YES;
-    [self.view addSubview: weightView];
-    weightView.alpha =ALPHA_MIN;
-    
-    foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
-    weightView.center = CGPointMake(foodView.center.x+foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
-    
-    
     // Добавляю распознаватель жестов для перехода между подэкранами
     
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
@@ -105,15 +114,6 @@
     tapGR.delegate = self;
     [self.view addGestureRecognizer:panGR];
     [self.view addGestureRecognizer:tapGR];
-
-   
-    
-    // Инициализация переменных
-    
-    [self foods];
-    onSearchScreen = NO;
-    onWeightScreen = NO;
-    alphaStep = (1-ALPHA_MIN) / (foodView.frame.size.width+D_BETWEEN_IMAGES);
 }
 
 
@@ -240,44 +240,44 @@
 - (void) buttonPushed: (UIButton *) sender{
     if (![label.text isEqualToString:@""] && label) {
         
-        // Получение Diet
-        
-        NSEntityDescription * dietDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: self.managedObjectContext];
-        NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
-        [fetchRequest setEntity:dietDescription];
-        NSArray * result = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
-        
         // Добавление данных в базу
         
         if ([label.text containsString:@"очков"]){
             for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
-                NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: self.managedObjectContext];
-                PointsHistory * pointsHistory = [[PointsHistory alloc] initWithEntity: pointsHistoryDescription insertIntoManagedObjectContext: self.managedObjectContext];
+                NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: managedObjectContext];
+                PointsHistory * pointsHistory = [[PointsHistory alloc] initWithEntity: pointsHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
                 
                 pointsHistory.date = [NSDate date];
                 pointsHistory.foodName =[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
                 pointsHistory.points = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"];
-                pointsHistory.toDiet = [result objectAtIndex:0];
+                pointsHistory.toDiet = [diet objectAtIndex:0];
                 
                 [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
+                NSLog(@"%@", [pointsHistory description]);
             }
             label.text = @"";
             label.alpha = 0;
         } else {
-            NSEntityDescription * weightHistoryDescription = [NSEntityDescription entityForName:@"WeightHistory" inManagedObjectContext: self.managedObjectContext];
-            WeightHistory * weightHistory = [[WeightHistory alloc] initWithEntity: weightHistoryDescription insertIntoManagedObjectContext: self.managedObjectContext];
+            NSEntityDescription * weightHistoryDescription = [NSEntityDescription entityForName:@"WeightHistory" inManagedObjectContext: managedObjectContext];
+            WeightHistory * weightHistory = [[WeightHistory alloc] initWithEntity: weightHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
             
             weightHistory.date = [NSDate date];
             weightHistory.weight = weightToAdd;
-            weightHistory.toDiet = [result objectAtIndex:0];
+            weightHistory.toDiet = [diet objectAtIndex:0];
             
             [self hideKeyboard];
+            NSLog(@"%@", [weightHistory description]);
         }
         [managedObjectContext save:nil];
         
-        // Проверка условий
         
+        NSLog(@"%@", [diet description]);
         
+        // Вывод прогресса диеты и обновление его графика
+        
+        // Вывод осатка дневных очков и обновление его графика
+        
+        // Проверка условий перехода на новый этап
         
         
     }

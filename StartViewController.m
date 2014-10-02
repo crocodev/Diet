@@ -15,7 +15,7 @@
 @implementation StartViewController
 
 
-@synthesize managedObjectContext, currentWeight, aimWeight;
+@synthesize currentWeight, aimWeight;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -43,45 +43,42 @@
 
 - (void) buttonPushed: (UIButton *) sender{
     
+    // Получаю контекст
+    
+    NSManagedObjectContext * managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    
     // Удеаление существующих сущностей
     
-    NSEntityDescription * entityDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: self.managedObjectContext];
+    NSEntityDescription * entityDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: managedObjectContext];
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:entityDescription];
-    NSArray * result = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    NSArray * result = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
     
     if ([result count] != 0){
         for ( Diet * toDelete in result){
-            NSLog(@"curW = %f aimW = %f  date = %@", [toDelete.currentWeight floatValue], [toDelete.aimWeight floatValue],toDelete.startDate);
-            
-            PointsHistory * ph = [toDelete.toPointsHistory anyObject];
-            NSLog(@"pointsHistory %@", ph.foodName);
-            
-            WeightHistory * wh = [toDelete.toWeightHistory anyObject];
-            NSLog(@"weightHistory %f", [wh.weight floatValue]);
-            
             [managedObjectContext deleteObject: toDelete];
         }
     }
         
     // Добавление новой сущности
         
-    Diet * diet = [[Diet alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
-    diet.startWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]];
-    diet.currentWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]];
-    diet.aimWeight = [NSNumber numberWithFloat: [aimWeight.text floatValue]];
+    Diet * diet = [[Diet alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:managedObjectContext];
+    diet.startWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]*10];
+    diet.currentWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]*10];
+    diet.aimWeight = [NSNumber numberWithFloat: [aimWeight.text floatValue]*10];
     diet.dayPoints = [NSNumber numberWithInt: 20];
     diet.restDayPoints = [NSNumber numberWithInt: 20];
     diet.startDate = [NSDate date];
     [managedObjectContext save:nil];
 
+    NSLog(@"%@", [diet description]);
+    
     [self performSegueWithIdentifier:@"seg" sender:self];
 }
 
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    TabBarController * tabBarController = [segue destinationViewController];
-    tabBarController.managedObjectContext = self.managedObjectContext;
-}
+//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+//
+//}
 
 @end

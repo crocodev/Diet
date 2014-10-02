@@ -7,11 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TabBarController.h"
 
 @interface StartViewController : UIViewController
 
-@property (strong, nonatomic) NSManagedObjectContext * managedObjectContext;
 @property (strong, nonatomic) UITextField * currentWeight;
 @property (strong, nonatomic) UITextField * aimWeight;
 
