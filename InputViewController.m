@@ -7,12 +7,11 @@
 //
 
 #import "InputViewController.h"
-#import "PNCircleChart.h"
 
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, tapGR, diet, managedObjectContext;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, tapGR, diet, consumptionChart,progressChart, managedObjectContext;
 
 
 #pragma mark - Inicialize
@@ -25,17 +24,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // Инициализация переменных
-    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-    NSEntityDescription * dietDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: managedObjectContext];
-    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:dietDescription];
-    diet = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
-    [self foods];
-    onSearchScreen = NO;
-    onWeightScreen = NO;
-    alphaStep = (1-ALPHA_MIN) / (foodView.frame.size.width+D_BETWEEN_IMAGES);
 
     // Добавляю индикатор подэкрана
     
@@ -51,22 +39,34 @@
     foodView.center = CGPointMake(SCREEN_WIDTH/2, 100);
     weightView.center = CGPointMake(foodView.center.x+foodView.frame.size.width+D_BETWEEN_IMAGES, 100);
     
+    // Инициализация переменных
+    
+    managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    NSEntityDescription * dietDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: managedObjectContext];
+    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:dietDescription];
+    diet = [[managedObjectContext executeFetchRequest:fetchRequest error:nil] objectAtIndex:0];
+    [self foods];
+    onSearchScreen = NO;
+    onWeightScreen = NO;
+    alphaStep = (1-ALPHA_MIN) / (foodView.frame.size.width+D_BETWEEN_IMAGES);
+    
     // Добавляю лэйбл
     
     label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
-    label.backgroundColor = [UIColor grayColor];
+    label.backgroundColor = [UIColor clearColor];
     label.text = @"";
     label.alpha = 0;
     [self.view addSubview:label];
     
     // Добавляю графики
     
-    PNCircleChart * consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 40, SCREEN_WIDTH/4, SCREEN_WIDTH/4) andTotal:[NSNumber numberWithInt:100] andCurrent:[NSNumber numberWithInt:60] andClockwise:YES andShadow:YES];
+    consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 40, SCREEN_WIDTH/4, SCREEN_WIDTH/4) andTotal: diet.dayPoints andCurrent:diet.restDayPoints andClockwise:YES andShadow:YES];
     consumptionChart.backgroundColor = [UIColor clearColor];
     [consumptionChart setStrokeColor:PNGreen];
-    [consumptionChart strokeChart];
+    [consumptionChart strokeChart]; 
     
-    PNCircleChart * progressChart = [[PNCircleChart alloc] initWithFrame:CGRectOffset(consumptionChart.frame, 115, 0) andTotal:[NSNumber numberWithInt:100] andCurrent:[NSNumber numberWithInt:60] andClockwise:YES andShadow:YES];
+    progressChart = [[PNCircleChart alloc] initWithFrame:CGRectOffset(consumptionChart.frame, 115, 0) andTotal:[NSNumber numberWithInt:[diet.startWeight integerValue] - [diet.aimWeight integerValue]] andCurrent:[NSNumber numberWithInt:[diet.aimWeight integerValue] - [diet.currentWeight integerValue]] andClockwise:YES andShadow:YES];
     progressChart.backgroundColor = [UIColor clearColor];
     [progressChart setStrokeColor:PNGreen];
     [progressChart strokeChart];
@@ -80,7 +80,7 @@
     [foodTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"reuseID"];
     foodTableView.delegate = self;
     foodTableView.dataSource = self;
-    foodTableView.backgroundColor = [UIColor yellowColor];
+    foodTableView.backgroundColor = [UIColor whiteColor];
     foodTableView.allowsMultipleSelection = YES;
     [self.view addSubview:foodTableView];
     
@@ -95,6 +95,7 @@
     
     CGRect frame = CGRectOffset(foodTableView.frame, SCREEN_WIDTH, 0);
     keyboard = [[ZenKeyboard alloc] initWithFrame: frame];
+    keyboard.backgroundColor = [UIColor whiteColor];
     keyboard.delegate = self;
     [self.view addSubview:keyboard];
     
@@ -102,7 +103,7 @@
     
     button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button addTarget:self action: @selector(buttonPushed:) forControlEvents:UIControlEventTouchUpInside];
-    [button setTitle:@"Add" forState:UIControlStateNormal];
+    [button setTitle:@"Sub" forState:UIControlStateNormal];
     [button setBackgroundColor: [UIColor grayColor]];
     button.frame = CGRectMake(0.0, 450.0, SCREEN_WIDTH, 40.0);
     [self.view addSubview:button];
@@ -144,7 +145,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseID" forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor greenColor];
+    cell.backgroundColor = [UIColor clearColor];
     
     if (onSearchScreen)
         cell.textLabel.text = [[foodsForSearch objectAtIndex:indexPath.row] objectForKey:@"foodName"];
@@ -238,49 +239,64 @@
 }
 
 - (void) buttonPushed: (UIButton *) sender{
-    if (![label.text isEqualToString:@""] && label) {
+    if ([label.text containsString:@"очков"]){
+        // Добавление данных в базу очков
         
-        // Добавление данных в базу
-        
-        if ([label.text containsString:@"очков"]){
-            for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
-                NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: managedObjectContext];
-                PointsHistory * pointsHistory = [[PointsHistory alloc] initWithEntity: pointsHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
-                
-                pointsHistory.date = [NSDate date];
-                pointsHistory.foodName =[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
-                pointsHistory.points = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"];
-                pointsHistory.toDiet = [diet objectAtIndex:0];
-                
-                [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
-                NSLog(@"%@", [pointsHistory description]);
-            }
-            label.text = @"";
-            label.alpha = 0;
-        } else {
-            NSEntityDescription * weightHistoryDescription = [NSEntityDescription entityForName:@"WeightHistory" inManagedObjectContext: managedObjectContext];
-            WeightHistory * weightHistory = [[WeightHistory alloc] initWithEntity: weightHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
+        int delta = 0;
+        for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
+            NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: managedObjectContext];
+            PointsHistory * pointsHistory = [[PointsHistory alloc] initWithEntity: pointsHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
             
-            weightHistory.date = [NSDate date];
-            weightHistory.weight = weightToAdd;
-            weightHistory.toDiet = [diet objectAtIndex:0];
+            pointsHistory.date = [NSDate date];
+            pointsHistory.foodName =[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
+            pointsHistory.points = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"];
+            pointsHistory.toDiet = diet;
             
-            [self hideKeyboard];
-            NSLog(@"%@", [weightHistory description]);
+            delta+=[pointsHistory.points integerValue];
+            [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
+            NSLog(@"%@", [pointsHistory description]);
         }
-        [managedObjectContext save:nil];
         
+        // Обнуление лэйбл
         
-        NSLog(@"%@", [diet description]);
+        label.text = @"";
+        label.alpha = 0;
         
-        // Вывод прогресса диеты и обновление его графика
+        //Обновление графика и остатка очков
         
-        // Вывод осатка дневных очков и обновление его графика
+        diet.restDayPoints = [NSNumber numberWithInt:[diet.restDayPoints integerValue] - delta];
+        [consumptionChart growChartByAmount:[NSNumber numberWithInt: - delta]];
         
-        // Проверка условий перехода на новый этап
+    } else if (![label.text isEqualToString:@""] && label){
+        // Добавление данных в базу веса
         
+        NSEntityDescription * weightHistoryDescription = [NSEntityDescription entityForName:@"WeightHistory" inManagedObjectContext: managedObjectContext];
+        WeightHistory * weightHistory = [[WeightHistory alloc] initWithEntity: weightHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
         
+        weightHistory.date = [NSDate date];
+        weightHistory.weight = weightToAdd;
+        weightHistory.toDiet = diet;
+        
+        [self hideKeyboard];
+        [self selectLeftScreen];
+        
+        //Обновление графика и текущего веса
+        
+        [progressChart growChartByAmount:[NSNumber numberWithInt: [diet.currentWeight integerValue] - [weightToAdd integerValue]]];
+        diet.currentWeight = weightToAdd;
+        NSLog(@"%@", [weightHistory description]);
     }
+    [managedObjectContext save:nil];
+    
+    
+    NSLog(@"%@", [diet description]);
+    
+    // Вывод прогресса диеты и обновление его графика
+    
+    // Вывод осатка дневных очков и обновление его графика
+    
+    // Проверка условий перехода на новый этап
+    
 }
 
 - (void) showSearchScreen{
@@ -312,7 +328,7 @@
 
 - (void) showKeybord{
     keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
-    [button setTitle:@"Sub" forState:UIControlStateNormal];
+    [button setTitle:@"Add" forState:UIControlStateNormal];
     if(!onWeightScreen){
         label.text = @"";
         label.alpha = 0;
@@ -327,7 +343,7 @@
         label.text = @"";
         label.alpha = 0;
     }
-    [button setTitle:@"Add" forState:UIControlStateNormal];
+    [button setTitle:@"Sub" forState:UIControlStateNormal];
     onWeightScreen = NO;
 }
 

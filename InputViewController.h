@@ -12,6 +12,7 @@
 #import "TabBarController.h"
 #import "PointsHistory.h"
 #import "WeightHistory.h"
+#import "PNCircleChart.h"
 
 #define ALPHA_MIN 0.4
 #define D_BETWEEN_IMAGES 10.0
@@ -21,7 +22,10 @@
 
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate>
 
-@property (strong, nonatomic) NSArray * diet;
+
+@property (strong, nonatomic) PNCircleChart * consumptionChart;
+@property (strong, nonatomic) PNCircleChart * progressChart;
+@property (strong, nonatomic) Diet * diet;
 @property (strong, nonatomic) UITapGestureRecognizer * tapGR;
 @property (strong, nonatomic) NSNumber * weightToAdd;
 @property (strong, nonatomic) NSManagedObjectContext * managedObjectContext;
