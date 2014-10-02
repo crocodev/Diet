@@ -13,12 +13,12 @@
 
 @interface Diet : NSManagedObject
 
+@property (nonatomic, retain) NSNumber * startWeight;
 @property (nonatomic, retain) NSNumber * aimWeight;
 @property (nonatomic, retain) NSNumber * currentWeight;
 @property (nonatomic, retain) NSNumber * dayPoints;
 @property (nonatomic, retain) NSNumber * restDayPoints;
 @property (nonatomic, retain) NSDate * startDate;
-@property (nonatomic, retain) NSNumber * startWeight;
 @property (nonatomic, retain) NSSet *toPointsHistory;
 @property (nonatomic, retain) NSSet *toWeightHistory;
 @end

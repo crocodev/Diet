@@ -25,7 +25,7 @@
     NSString * launches = [defaults objectForKey:@"launches"];
     NSString * viewControlerID = @"";
     
-    if ([@"1" isEqualToString:launches]) {
+    if (FERSTE_SART[@"1" isEqualToString:launches]) {
         viewControlerID = @"start";
         [[NSUserDefaults standardUserDefaults] setValue:@"1" forKey:launches];
     }

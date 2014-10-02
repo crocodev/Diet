@@ -33,8 +33,8 @@
     
     currentWeight = [[UITextField alloc] initWithFrame:CGRectMake(10.0, 250.0, 40.0, 40.0)];
     aimWeight = [[UITextField alloc] initWithFrame:CGRectMake(60.0, 250.0, 40.0, 40.0)];
-    currentWeight.backgroundColor = [UIColor blueColor];
-    aimWeight.backgroundColor = [UIColor blueColor];
+    currentWeight.backgroundColor = [UIColor grayColor];
+    aimWeight.backgroundColor = [UIColor grayColor];
     [self.view addSubview:currentWeight];
     [self.view addSubview:aimWeight];
     
@@ -42,38 +42,40 @@
 
 
 - (void) buttonPushed: (UIButton *) sender{
-    
-    // Получаю контекст
-    
-    NSManagedObjectContext * managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
-    
-    // Удеаление существующих сущностей
-    
-    NSEntityDescription * entityDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: managedObjectContext];
-    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:entityDescription];
-    NSArray * result = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
-    
-    if ([result count] != 0){
-        for ( Diet * toDelete in result){
-            [managedObjectContext deleteObject: toDelete];
+    if (![currentWeight.text isEqualToString:@""] && ![aimWeight.text isEqualToString:@""] && [currentWeight.text floatValue] > [aimWeight.text floatValue]){
+        
+        // Получаю контекст
+        
+        NSManagedObjectContext * managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+        
+        // Удеаление существующих сущностей
+        
+        NSEntityDescription * entityDescription = [NSEntityDescription entityForName:@"Diet" inManagedObjectContext: managedObjectContext];
+        NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+        [fetchRequest setEntity:entityDescription];
+        NSArray * result = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
+        
+        if ([result count] != 0){
+            for ( Diet * toDelete in result){
+                NSLog(@"deleted Diet object");
+                [managedObjectContext deleteObject: toDelete];
+            }
         }
+        
+        // Добавление новой сущности
+        
+        Diet * diet = [[Diet alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:managedObjectContext];
+        diet.startWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]*10];
+        diet.currentWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]*10];
+        diet.aimWeight = [NSNumber numberWithFloat: [aimWeight.text floatValue]*10];
+        diet.dayPoints = [NSNumber numberWithInt: 20];
+        diet.restDayPoints = [NSNumber numberWithInt: 20];
+        diet.startDate = [NSDate date];
+        [managedObjectContext save:nil];
+        
+        NSLog(@"%@", [diet description]);
+        [self performSegueWithIdentifier:@"seg" sender:self];
     }
-        
-    // Добавление новой сущности
-        
-    Diet * diet = [[Diet alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:managedObjectContext];
-    diet.startWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]*10];
-    diet.currentWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]*10];
-    diet.aimWeight = [NSNumber numberWithFloat: [aimWeight.text floatValue]*10];
-    diet.dayPoints = [NSNumber numberWithInt: 20];
-    diet.restDayPoints = [NSNumber numberWithInt: 20];
-    diet.startDate = [NSDate date];
-    [managedObjectContext save:nil];
-
-    NSLog(@"%@", [diet description]);
-    
-    [self performSegueWithIdentifier:@"seg" sender:self];
 }
 
 

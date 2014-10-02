@@ -17,7 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.selectedIndex = 2;
+    self.selectedIndex = FERSTE_TAB_ITEM;
 }
 
 - (void)didReceiveMemoryWarning {

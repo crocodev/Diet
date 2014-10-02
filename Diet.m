@@ -12,12 +12,12 @@
 
 @implementation Diet
 
+@dynamic startWeight;
 @dynamic aimWeight;
 @dynamic currentWeight;
 @dynamic dayPoints;
 @dynamic restDayPoints;
 @dynamic startDate;
-@dynamic startWeight;
 @dynamic toPointsHistory;
 @dynamic toWeightHistory;
 

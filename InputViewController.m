@@ -17,11 +17,6 @@
 #pragma mark - Inicialize
 
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -117,6 +112,30 @@
     [self.view addGestureRecognizer:tapGR];
 }
 
+-(NSArray *) foods{
+    foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
+    
+    int section = 0;
+    int row = 0;
+    
+    NSMutableArray * buffer = [[NSMutableArray alloc] init];
+    for (NSDictionary * dic in foods){
+        for(NSDictionary * dicc in [dic objectForKey:@"foods"]){
+            
+            NSMutableDictionary * md = [NSMutableDictionary dictionaryWithDictionary:dicc];
+            [md setValue:[NSIndexPath indexPathForItem:row inSection:section] forKey:@"indexPath"];
+            
+            
+            [buffer addObject:[md copy]];
+            row++;
+        }
+        row = 0;
+        section++;
+    }
+    
+    foodsForSearch = [NSArray arrayWithArray:buffer];
+    return foods;
+}
 
 #pragma mark - UITableViewDelegate and UITableViewDataSource
 
@@ -210,93 +229,136 @@
     }
 }
 
+#pragma mark - Gesture Recognizers
 
-#pragma mark - Other methods
+-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    if ((touch.view == foodView || touch.view == weightView) && gestureRecognizer == tapGR)
+        return YES;
+    else{
+        return NO;
+        
+    }
+}
 
--(NSArray *) foods{
-    foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
+-(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
+    float velocity = [gestureRecognizer velocityInView:self.view].x;
     
-    int section = 0;
-    int row = 0;
-    
-    NSMutableArray * buffer = [[NSMutableArray alloc] init];
-    for (NSDictionary * dic in foods){
-        for(NSDictionary * dicc in [dic objectForKey:@"foods"]){
-            
-            NSMutableDictionary * md = [NSMutableDictionary dictionaryWithDictionary:dicc];
-            [md setValue:[NSIndexPath indexPathForItem:row inSection:section] forKey:@"indexPath"];
-            
-            
-            [buffer addObject:[md copy]];
-            row++;
-        }
-        row = 0;
-        section++;
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        
     }
     
-    foodsForSearch = [NSArray arrayWithArray:buffer];
-    return foods;
+    if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        if (velocity <= 0){
+            if (foodView.alpha > ALPHA_MIN)
+                foodView.alpha -= alphaStep;
+            if (weightView.alpha < 1.0)
+                weightView.alpha += alphaStep;
+            if ( foodView.alpha > ALPHA_MIN){
+                foodView.frame = CGRectOffset(foodView.frame, -1, 0);
+                weightView.frame = CGRectOffset(weightView.frame, -1, 0);
+            }
+        } else {
+            if (foodView.alpha < 1.0)
+                foodView.alpha += alphaStep;
+            if (weightView.alpha > ALPHA_MIN)
+                weightView.alpha -= alphaStep;
+            if ( foodView.alpha < 1.0){
+                foodView.frame = CGRectOffset(foodView.frame, 1, 0);
+                weightView.frame = CGRectOffset(weightView.frame, 1, 0);
+            }
+        }
+    }
+    
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        if (foodView.alpha >= (1-ALPHA_MIN)/2 + ALPHA_MIN){
+            //Выбрано подменю блюд
+            [self selectLeftScreen];
+        } else {
+            //Выбрано подменю веса
+            [self selectRightScreen];
+        }
+    }
 }
+
+-(void) handleTapGesture:(UITapGestureRecognizer *) gestureRecognizer{
+    if (CGRectContainsPoint(foodView.frame, [gestureRecognizer locationInView:self.view]) || CGRectContainsPoint(weightView.frame, [gestureRecognizer locationInView:self.view])) {
+        if(onWeightScreen)
+            [self selectLeftScreen];
+        else
+            [self selectRightScreen];
+    }
+}
+
+#pragma mark - Core Data methods
+
+- (WeightHistory *) weightHistory{
+    NSEntityDescription * weightHistoryDescription = [NSEntityDescription entityForName:@"WeightHistory" inManagedObjectContext: managedObjectContext];
+    return [[WeightHistory alloc] initWithEntity: weightHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
+}
+
+- (PointsHistory *) pointsHistory{
+    NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: managedObjectContext];
+    return [[PointsHistory alloc] initWithEntity: pointsHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
+}
+
+#pragma mark - Other
 
 - (void) buttonPushed: (UIButton *) sender{
     if ([label.text containsString:@"очков"]){
-        // Добавление данных в базу очков
-        
-        int delta = 0;
-        for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
-            NSEntityDescription * pointsHistoryDescription = [NSEntityDescription entityForName:@"PointsHistory" inManagedObjectContext: managedObjectContext];
-            PointsHistory * pointsHistory = [[PointsHistory alloc] initWithEntity: pointsHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
-            
-            pointsHistory.date = [NSDate date];
-            pointsHistory.foodName =[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
-            pointsHistory.points = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"];
-            pointsHistory.toDiet = diet;
-            
-            delta+=[pointsHistory.points integerValue];
-            [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
-            NSLog(@"%@", [pointsHistory description]);
-        }
-        
-        // Обнуление лэйбл
-        
-        label.text = @"";
-        label.alpha = 0;
-        
-        //Обновление графика и остатка очков
-        
-        diet.restDayPoints = [NSNumber numberWithInt:[diet.restDayPoints integerValue] - delta];
-        [consumptionChart growChartByAmount:[NSNumber numberWithInt: - delta]];
-        
+        [self subPoints];
     } else if (![label.text isEqualToString:@""] && label){
-        // Добавление данных в базу веса
-        
-        NSEntityDescription * weightHistoryDescription = [NSEntityDescription entityForName:@"WeightHistory" inManagedObjectContext: managedObjectContext];
-        WeightHistory * weightHistory = [[WeightHistory alloc] initWithEntity: weightHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
-        
-        weightHistory.date = [NSDate date];
-        weightHistory.weight = weightToAdd;
-        weightHistory.toDiet = diet;
-        
-        [self hideKeyboard];
-        [self selectLeftScreen];
-        
-        //Обновление графика и текущего веса
-        
-        [progressChart growChartByAmount:[NSNumber numberWithInt: [diet.currentWeight integerValue] - [weightToAdd integerValue]]];
-        diet.currentWeight = weightToAdd;
-        NSLog(@"%@", [weightHistory description]);
+        [self addWeight];
     }
+    [self checkConditions];
+}
+
+- (void) checkConditions{
+    
+}
+
+
+- (void) addWeight {
+    WeightHistory * weightHistory = [self weightHistory];
+    weightHistory.date = [NSDate date];
+    weightHistory.weight = weightToAdd;
+    weightHistory.toDiet = diet;
+    
+    [self selectLeftScreen];
+    
+    //Обновление графика и текущего веса
+    
+    [progressChart growChartByAmount:[NSNumber numberWithInt: [diet.currentWeight integerValue] - [weightToAdd integerValue]]];
+    diet.currentWeight = weightToAdd;
     [managedObjectContext save:nil];
-    
-    
     NSLog(@"%@", [diet description]);
+    NSLog(@"%@", [weightHistory description]);
+}
+
+- (void) subPoints {
+    int delta = 0;
+    for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
+        PointsHistory * pointsHistory = [self pointsHistory];
+        pointsHistory.date = [NSDate date];
+        pointsHistory.foodName =[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
+        pointsHistory.points = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"];
+        pointsHistory.toDiet = diet;
+        
+        delta+=[pointsHistory.points integerValue];
+        [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
+        [managedObjectContext save:nil];
+        NSLog(@"%@", [diet description]);
+        NSLog(@"%@", [pointsHistory description]);
+    }
     
-    // Вывод прогресса диеты и обновление его графика
+    // Обнуление лэйбл
     
-    // Вывод осатка дневных очков и обновление его графика
+    label.text = @"";
+    label.alpha = 0;
     
-    // Проверка условий перехода на новый этап
+    //Обновление графика и остатка очков
     
+    diet.restDayPoints = [NSNumber numberWithInt:[diet.restDayPoints integerValue] - delta];
+    [consumptionChart growChartByAmount:[NSNumber numberWithInt: - delta]];
 }
 
 - (void) showSearchScreen{
@@ -365,67 +427,6 @@
         weightView.alpha = 1.0;
     }];
     [self showKeybord];
-}
-
-
-#pragma mark - Gesture Recognizers
-
--(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
-    if ((touch.view == foodView || touch.view == weightView) && gestureRecognizer == tapGR)
-        return YES;
-    else{
-        return NO;
-        
-    }
-}
-
--(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
-    float velocity = [gestureRecognizer velocityInView:self.view].x;
-    
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        
-    }
-    
-    if (gestureRecognizer.state == UIGestureRecognizerStateChanged) {
-        if (velocity <= 0){
-            if (foodView.alpha > ALPHA_MIN)
-                foodView.alpha -= alphaStep;
-            if (weightView.alpha < 1.0)
-                weightView.alpha += alphaStep;
-            if ( foodView.alpha > ALPHA_MIN){
-                foodView.frame = CGRectOffset(foodView.frame, -1, 0);
-                weightView.frame = CGRectOffset(weightView.frame, -1, 0);
-            }
-        } else {
-            if (foodView.alpha < 1.0)
-                foodView.alpha += alphaStep;
-            if (weightView.alpha > ALPHA_MIN)
-                weightView.alpha -= alphaStep;
-            if ( foodView.alpha < 1.0){
-                foodView.frame = CGRectOffset(foodView.frame, 1, 0);
-                weightView.frame = CGRectOffset(weightView.frame, 1, 0);
-            }
-        }
-    }
-    
-    if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        if (foodView.alpha >= (1-ALPHA_MIN)/2 + ALPHA_MIN){
-            //Выбрано подменю блюд
-            [self selectLeftScreen];
-        } else {
-            //Выбрано подменю веса
-            [self selectRightScreen];
-        }
-    }
-}
-
--(void) handleTapGesture:(UITapGestureRecognizer *) gestureRecognizer{
-    if (CGRectContainsPoint(foodView.frame, [gestureRecognizer locationInView:self.view]) || CGRectContainsPoint(weightView.frame, [gestureRecognizer locationInView:self.view])) {
-        if(onWeightScreen)
-            [self selectLeftScreen];
-        else
-            [self selectRightScreen];
-    }
 }
 
 @end
