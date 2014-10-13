@@ -156,4 +156,56 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
+#pragma mark - Conditions check
+/*
+switch (stage){  // Проверак на каком этапе диеты находится пользовтель
+    case 1:
+        if (weeksLeft: 2){ // Есои прошло две недели с момента начала диеты -> переход на второй этап, увеличение дн. нормы оч.
+            NSLog(@"Вы перешли на второй этап, дневная норма увеличина");
+            lastDate = [NSDate date]; // lastDate это не дата последнего запуска, это дата  когда в последний раз было обнаружено  что просло >= weaksNum
+            stage = 2;
+            dayPoints += 3;
+        }
+        break;
+    case 2:
+        if (weeksLeft: 1){ // По прошествию недели увеличивается дн. норма оч.
+            NSLog(@"Дневная норма увеличина");
+            lastDate = [NSDate date];
+            dayPoints += 3;
+        }
+        break;
+    case 3:
+        if (weeksLeft: 1){ // По прошествию недели увеличивается дн. норма оч.
+            NSLog(@"Дневная норма увеличина");
+            lastDate = [NSDate date];
+            dayPoints += 6;
+        }
+        break;
+}
+
++ (NSInteger)daysBetweenDate:(NSDate*)fromDateTime andDate:(NSDate*)toDateTime
+{
+    NSDate *fromDate;
+    NSDate *toDate;
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    [calendar rangeOfUnit:NSDayCalendarUnit startDate:&fromDate
+                 interval:NULL forDate:fromDateTime];
+    [calendar rangeOfUnit:NSDayCalendarUnit startDate:&toDate
+                 interval:NULL forDate:toDateTime];
+    
+    NSDateComponents *difference = [calendar components:NSDayCalendarUnit
+                                               fromDate:fromDate toDate:toDate options:0];
+    
+    return [difference day];
+}
+
+
+
+-(BOOL) weeksLeft: (int) weeksNum {
+    return [self daysBetweenDate: lastDate andDate: [NSDate date]] > 7 * weeksNum ? YES : NO;
+}
+*/
+
 @end

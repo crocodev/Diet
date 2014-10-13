@@ -12,7 +12,7 @@
 #import "Diet.h"
 #import "AppDelegate.h"
 
-#define FERSTE_SART !
+#define FERSTE_SART 
 #define FERSTE_TAB_ITEM 2
 
 

@@ -5,6 +5,7 @@
         <attribute name="currentWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="dayPoints" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="restDayPoints" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="stage" optional="YES" attributeType="Integer 16" defaultValueString="1" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="startWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <relationship name="toPointsHistory" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PointsHistory" inverseName="toDiet" inverseEntity="PointsHistory" syncable="YES"/>
@@ -22,7 +23,7 @@
         <relationship name="toDiet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Diet" inverseName="toWeightHistory" inverseEntity="Diet" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Diet" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="Diet" positionX="-63" positionY="-18" width="128" height="180"/>
         <element name="PointsHistory" positionX="-414" positionY="-171" width="128" height="103"/>
         <element name="WeightHistory" positionX="-416" positionY="137" width="128" height="90"/>
     </elements>

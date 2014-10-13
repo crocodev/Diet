@@ -156,9 +156,9 @@
 		24047EC419CAA8E400521269 /* Diet */ = {
 			isa = PBXGroup;
 			children = (
+				243765DC19CAD7AF007A2E40 /* PrefixHeader.pch */,
 				24047EC919CAA8E500521269 /* AppDelegate.h */,
 				24047ECA19CAA8E500521269 /* AppDelegate.m */,
-				243765DC19CAD7AF007A2E40 /* PrefixHeader.pch */,
 				24047ED219CAA8E500521269 /* Main.storyboard */,
 				24047ED519CAA8E500521269 /* Images.xcassets */,
 				243DA59719D16F80005A3B51 /* Food.plist */,

@@ -11,7 +11,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, tapGR, diet, consumptionChart,progressChart, managedObjectContext;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, diet, consumptionChart,progressChart, managedObjectContext;
 
 
 #pragma mark - Inicialize
@@ -59,7 +59,8 @@
     consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 40, SCREEN_WIDTH/4, SCREEN_WIDTH/4) andTotal: diet.dayPoints andCurrent:diet.restDayPoints andClockwise:YES andShadow:YES];
     consumptionChart.backgroundColor = [UIColor clearColor];
     [consumptionChart setStrokeColor:PNGreen];
-    [consumptionChart strokeChart]; 
+    [consumptionChart strokeChart];
+    consumptionChart.userInteractionEnabled = YES;
     
     progressChart = [[PNCircleChart alloc] initWithFrame:CGRectOffset(consumptionChart.frame, 115, 0) andTotal:[NSNumber numberWithInt:[diet.startWeight integerValue] - [diet.aimWeight integerValue]] andCurrent:[NSNumber numberWithInt:[diet.aimWeight integerValue] - [diet.currentWeight integerValue]] andClockwise:YES andShadow:YES];
     progressChart.backgroundColor = [UIColor clearColor];
@@ -106,8 +107,7 @@
     // Добавляю распознаватель жестов для перехода между подэкранами
     
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
-    tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
-    tapGR.delegate = self;
+    UITapGestureRecognizer * tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
     [self.view addGestureRecognizer:panGR];
     [self.view addGestureRecognizer:tapGR];
 }
@@ -231,15 +231,6 @@
 
 #pragma mark - Gesture Recognizers
 
--(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
-    if ((touch.view == foodView || touch.view == weightView) && gestureRecognizer == tapGR)
-        return YES;
-    else{
-        return NO;
-        
-    }
-}
-
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
     float velocity = [gestureRecognizer velocityInView:self.view].x;
     
@@ -286,6 +277,8 @@
             [self selectLeftScreen];
         else
             [self selectRightScreen];
+    } else if (CGRectContainsPoint(consumptionChart.frame, [gestureRecognizer locationInView:self.view])){
+        NSLog(@"manual change dayPoints");
     }
 }
 
@@ -309,29 +302,10 @@
     } else if (![label.text isEqualToString:@""] && label){
         [self addWeight];
     }
-    [self checkConditions];
-}
-
-- (void) checkConditions{
     
-}
-
-
-- (void) addWeight {
-    WeightHistory * weightHistory = [self weightHistory];
-    weightHistory.date = [NSDate date];
-    weightHistory.weight = weightToAdd;
-    weightHistory.toDiet = diet;
+    // Сохранить изменения
     
-    [self selectLeftScreen];
-    
-    //Обновление графика и текущего веса
-    
-    [progressChart growChartByAmount:[NSNumber numberWithInt: [diet.currentWeight integerValue] - [weightToAdd integerValue]]];
-    diet.currentWeight = weightToAdd;
     [managedObjectContext save:nil];
-    NSLog(@"%@", [diet description]);
-    NSLog(@"%@", [weightHistory description]);
 }
 
 - (void) subPoints {
@@ -345,7 +319,7 @@
         
         delta+=[pointsHistory.points integerValue];
         [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
-        [managedObjectContext save:nil];
+        
         NSLog(@"%@", [diet description]);
         NSLog(@"%@", [pointsHistory description]);
     }
@@ -355,10 +329,55 @@
     label.text = @"";
     label.alpha = 0;
     
-    //Обновление графика и остатка очков
+    // Обновление графика и остатка очков
     
     diet.restDayPoints = [NSNumber numberWithInt:[diet.restDayPoints integerValue] - delta];
     [consumptionChart growChartByAmount:[NSNumber numberWithInt: - delta]];
+}
+
+- (void) addWeight {
+    WeightHistory * weightHistory = [self weightHistory];
+    weightHistory.date = [NSDate date];
+    weightHistory.weight = weightToAdd;
+    weightHistory.toDiet = diet;
+    
+    diet.currentWeight = weightToAdd;
+    
+    [self selectLeftScreen];
+    
+    // Проверка условий
+    
+    switch ([diet.stage integerValue]){
+        case 1:
+            if (diet.currentWeight <= diet.aimWeight){
+                NSLog(@"Вы достигли цели и перешли на четвертый этап");
+                diet.stage = [NSNumber numberWithInt: 4];
+            }
+            break;
+        case 2:
+            if (diet.currentWeight <= diet.aimWeight){
+                NSLog(@"Вы достигли цели и перешли на четвертый этап");
+                diet.stage = [NSNumber numberWithInt: 4];
+            } else if ([diet.currentWeight integerValue] - [diet.aimWeight integerValue] <= ([diet.aimWeight integerValue] - [diet.startWeight integerValue]) * 30 / 100 ){
+                NSLog(@"Вы достигли цели и перешли на третий эиап, дневная норма увеличина");
+                diet.stage = [NSNumber numberWithInt: 3];
+                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+6];
+            } 
+            break;
+        case 3:
+            if (diet.currentWeight <= diet.aimWeight){
+                NSLog(@"Вы достигли цели и перешли на четвертый этап");
+                diet.stage = [NSNumber numberWithInt: 4];
+            } 
+            break;
+    }
+    
+    // Обновление графика и текущего веса
+    
+    [progressChart growChartByAmount:[NSNumber numberWithInt: [diet.currentWeight integerValue] - [weightToAdd integerValue]]];
+    
+    NSLog(@"%@", [diet description]);
+    NSLog(@"%@", [weightHistory description]);
 }
 
 - (void) showSearchScreen{

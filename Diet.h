@@ -13,6 +13,7 @@
 
 @interface Diet : NSManagedObject
 
+@property (nonatomic, retain) NSNumber * stage;
 @property (nonatomic, retain) NSNumber * startWeight;
 @property (nonatomic, retain) NSNumber * aimWeight;
 @property (nonatomic, retain) NSNumber * currentWeight;
