@@ -62,7 +62,7 @@
     [consumptionChart strokeChart];
     consumptionChart.userInteractionEnabled = YES;
     
-    progressChart = [[PNCircleChart alloc] initWithFrame:CGRectOffset(consumptionChart.frame, 115, 0) andTotal:[NSNumber numberWithInt:[diet.startWeight integerValue] - [diet.aimWeight integerValue]] andCurrent:[NSNumber numberWithInt:[diet.aimWeight integerValue] - [diet.currentWeight integerValue]] andClockwise:YES andShadow:YES];
+    progressChart = [[PNCircleChart alloc] initWithFrame:CGRectOffset(consumptionChart.frame, 115, 0) andTotal:[NSNumber numberWithFloat:([diet.startWeight floatValue] - [diet.aimWeight floatValue])/10] andCurrent:[NSNumber numberWithFloat:([diet.startWeight floatValue] - [diet.currentWeight floatValue])/10] andClockwise:YES andShadow:YES];
     progressChart.backgroundColor = [UIColor clearColor];
     [progressChart setStrokeColor:PNGreen];
     [progressChart strokeChart];
@@ -219,7 +219,7 @@
     label.alpha = 1;
     if (sender == keyboard){
         label.text = [NSString stringWithFormat:@"%@ кг", string];
-        weightToAdd = [NSNumber numberWithFloat:[string floatValue]];
+        weightToAdd = [NSNumber numberWithFloat:[string floatValue]*10];
     } else{
         int i = 0;
         for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
@@ -341,6 +341,9 @@
     weightHistory.weight = weightToAdd;
     weightHistory.toDiet = diet;
     
+    // Обновление графика и текущего веса
+    
+    [progressChart growChartByAmount:[NSNumber numberWithFloat: ([diet.currentWeight floatValue] - [weightToAdd floatValue])/10]];
     diet.currentWeight = weightToAdd;
     
     [self selectLeftScreen];
@@ -349,32 +352,28 @@
     
     switch ([diet.stage integerValue]){
         case 1:
-            if (diet.currentWeight <= diet.aimWeight){
+            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
                 NSLog(@"Вы достигли цели и перешли на четвертый этап");
                 diet.stage = [NSNumber numberWithInt: 4];
             }
             break;
         case 2:
-            if (diet.currentWeight <= diet.aimWeight){
+            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
                 NSLog(@"Вы достигли цели и перешли на четвертый этап");
                 diet.stage = [NSNumber numberWithInt: 4];
-            } else if ([diet.currentWeight integerValue] - [diet.aimWeight integerValue] <= ([diet.aimWeight integerValue] - [diet.startWeight integerValue]) * 30 / 100 ){
+            } else if ([diet.currentWeight floatValue] - [diet.aimWeight floatValue] <= ([diet.aimWeight floatValue] - [diet.startWeight floatValue]) * 30 / 100 ){
                 NSLog(@"Вы достигли цели и перешли на третий эиап, дневная норма увеличина");
                 diet.stage = [NSNumber numberWithInt: 3];
                 diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+6];
             } 
             break;
         case 3:
-            if (diet.currentWeight <= diet.aimWeight){
+            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
                 NSLog(@"Вы достигли цели и перешли на четвертый этап");
                 diet.stage = [NSNumber numberWithInt: 4];
             } 
             break;
     }
-    
-    // Обновление графика и текущего веса
-    
-    [progressChart growChartByAmount:[NSNumber numberWithInt: [diet.currentWeight integerValue] - [weightToAdd integerValue]]];
     
     NSLog(@"%@", [diet description]);
     NSLog(@"%@", [weightHistory description]);
@@ -408,6 +407,7 @@
 }
 
 - (void) showKeybord{
+    keyboard.text = @"";
     keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
     [button setTitle:@"Add" forState:UIControlStateNormal];
     if(!onWeightScreen){

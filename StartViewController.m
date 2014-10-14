@@ -66,10 +66,8 @@
         
         Diet * diet = [[Diet alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:managedObjectContext];
         diet.startWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]*10];
-        diet.currentWeight = [NSNumber numberWithFloat: [currentWeight.text floatValue]*10];
+        diet.currentWeight = diet.startWeight;
         diet.aimWeight = [NSNumber numberWithFloat: [aimWeight.text floatValue]*10];
-        diet.dayPoints = [NSNumber numberWithInt: 20];
-        diet.restDayPoints = [NSNumber numberWithInt: 20];
         diet.startDate = [NSDate date];
         [managedObjectContext save:nil];
         

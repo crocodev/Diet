@@ -3,8 +3,8 @@
     <entity name="Diet" representedClassName="Diet" syncable="YES">
         <attribute name="aimWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="currentWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="dayPoints" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="restDayPoints" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="dayPoints" optional="YES" attributeType="Integer 16" defaultValueString="20" syncable="YES"/>
+        <attribute name="restDayPoints" optional="YES" attributeType="Integer 16" defaultValueString="20" syncable="YES"/>
         <attribute name="stage" optional="YES" attributeType="Integer 16" defaultValueString="1" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="startWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
