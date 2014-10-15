@@ -21,5 +21,6 @@
 @dynamic toPointsHistory;
 @dynamic toWeightHistory;
 @dynamic stage;
+@dynamic checkDate;
 
 @end

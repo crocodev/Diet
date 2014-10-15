@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSNumber * dayPoints;
 @property (nonatomic, retain) NSNumber * restDayPoints;
 @property (nonatomic, retain) NSDate * startDate;
+@property (nonatomic, retain) NSDate * checkDate;
 @property (nonatomic, retain) NSSet *toPointsHistory;
 @property (nonatomic, retain) NSSet *toWeightHistory;
 @end

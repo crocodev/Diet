@@ -27,11 +27,13 @@
 @property (strong, nonatomic) PNCircleChart * progressChart;
 @property (strong, nonatomic) Diet * diet;
 @property (strong, nonatomic) NSNumber * weightToAdd;
+@property (strong, nonatomic) UITapGestureRecognizer * tapGR;
 @property (strong, nonatomic) NSManagedObjectContext * managedObjectContext;
 @property (assign, nonatomic) BOOL onWeightScreen;
 @property (assign, nonatomic) BOOL onSearchScreen;
 @property (strong, nonatomic) UIButton * button;
-@property (strong, nonatomic) UILabel * label;
+@property (strong, nonatomic) UILabel * inputLabel;
+@property (strong, nonatomic) UILabel * stageLabel;
 @property (strong, nonatomic) NSArray * foods;
 @property (strong, nonatomic) NSMutableArray * selectedRowsIndexPathes;
 @property (strong, nonatomic) NSArray * foodsForSearch;

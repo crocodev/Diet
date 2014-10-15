@@ -26,7 +26,7 @@
     [button addTarget:self action: @selector(buttonPushed:) forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"Next" forState:UIControlStateNormal];
     [button setBackgroundColor: [UIColor grayColor]];
-    button.frame = CGRectMake(100.0, 450.0, 40.0, 40.0);
+    button.frame = CGRectMake(100.0, 50.0, 40.0, 40.0);
     [self.view addSubview:button];
     
     // Добавляюю поля ввода данных
@@ -69,9 +69,9 @@
         diet.currentWeight = diet.startWeight;
         diet.aimWeight = [NSNumber numberWithFloat: [aimWeight.text floatValue]*10];
         diet.startDate = [NSDate date];
+        diet.checkDate = diet.startDate;
         [managedObjectContext save:nil];
         
-        NSLog(@"%@", [diet description]);
         [self performSegueWithIdentifier:@"seg" sender:self];
     }
 }

@@ -11,7 +11,7 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,label,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, diet, consumptionChart,progressChart, managedObjectContext;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,inputLabel,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, diet, consumptionChart,progressChart, managedObjectContext , tapGR, stageLabel;
 
 
 #pragma mark - Inicialize
@@ -46,13 +46,20 @@
     onWeightScreen = NO;
     alphaStep = (1-ALPHA_MIN) / (foodView.frame.size.width+D_BETWEEN_IMAGES);
     
-    // Добавляю лэйбл
+    // Добавляю лэйбл вводимых данных
     
-    label = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
-    label.backgroundColor = [UIColor clearColor];
-    label.text = @"";
-    label.alpha = 0;
-    [self.view addSubview:label];
+    inputLabel = [[UILabel alloc] initWithFrame: CGRectMake(100, 100, 200, 60)];
+    inputLabel.backgroundColor = [UIColor clearColor];
+    inputLabel.text = @"";
+    inputLabel.alpha = 0;
+    [self.view addSubview: inputLabel];
+    
+    // Добавляю лэйбл этапа диеты
+    
+    stageLabel = [[UILabel alloc] initWithFrame: CGRectMake(100, 70, 200, 60)];
+    stageLabel.backgroundColor = [UIColor clearColor];
+    stageLabel.text = [diet.stage stringValue];
+    [self.view addSubview: stageLabel];
     
     // Добавляю графики
     
@@ -107,9 +114,14 @@
     // Добавляю распознаватель жестов для перехода между подэкранами
     
     UIPanGestureRecognizer * panGR = [[UIPanGestureRecognizer alloc] initWithTarget: self action:@selector(handlePanGesture:)];
-    UITapGestureRecognizer * tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+    tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+    tapGR.delegate = self;
     [self.view addGestureRecognizer:panGR];
     [self.view addGestureRecognizer:tapGR];
+}
+
+-(void) viewWillAppear:(BOOL)animated{
+    [self checkConditions];
 }
 
 -(NSArray *) foods{
@@ -216,20 +228,29 @@
 
 
 -(void) changeLabelTextTo:(NSString *) string bySender: (id) sender{
-    label.alpha = 1;
+    inputLabel.alpha = 1;
     if (sender == keyboard){
-        label.text = [NSString stringWithFormat:@"%@ кг", string];
+        inputLabel.text = [NSString stringWithFormat:@"%@ кг", string];
         weightToAdd = [NSNumber numberWithFloat:[string floatValue]*10];
     } else{
         int i = 0;
         for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
             i+= [(NSNumber*)[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"] integerValue];
         }
-        label.text = [NSString stringWithFormat:@"%i очков", i];
+        inputLabel.text = [NSString stringWithFormat:@"%i очков", i];
     }
 }
 
 #pragma mark - Gesture Recognizers
+
+-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    if ((touch.view == foodView || touch.view == weightView || touch.view == consumptionChart) && gestureRecognizer == tapGR)
+        return YES;
+    else{
+        return NO;
+        
+    }
+}
 
 -(void)handlePanGesture:(UIPanGestureRecognizer *)gestureRecognizer{
     float velocity = [gestureRecognizer velocityInView:self.view].x;
@@ -297,9 +318,9 @@
 #pragma mark - Other
 
 - (void) buttonPushed: (UIButton *) sender{
-    if ([label.text containsString:@"очков"]){
+    if ([inputLabel.text containsString:@"очков"]){
         [self subPoints];
-    } else if (![label.text isEqualToString:@""] && label){
+    } else if (![inputLabel.text isEqualToString:@""] && inputLabel){
         [self addWeight];
     }
     
@@ -319,15 +340,12 @@
         
         delta+=[pointsHistory.points integerValue];
         [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
-        
-        NSLog(@"%@", [diet description]);
-        NSLog(@"%@", [pointsHistory description]);
     }
     
     // Обнуление лэйбл
     
-    label.text = @"";
-    label.alpha = 0;
+    inputLabel.text = @"";
+    inputLabel.alpha = 0;
     
     // Обновление графика и остатка очков
     
@@ -375,8 +393,7 @@
             break;
     }
     
-    NSLog(@"%@", [diet description]);
-    NSLog(@"%@", [weightHistory description]);
+    stageLabel.text = [diet.stage stringValue];
 }
 
 - (void) showSearchScreen{
@@ -411,8 +428,8 @@
     keyboard.frame = CGRectMake(0, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
     [button setTitle:@"Add" forState:UIControlStateNormal];
     if(!onWeightScreen){
-        label.text = @"";
-        label.alpha = 0;
+        inputLabel.text = @"";
+        inputLabel.alpha = 0;
     }
     [foodTableView reloadData];
     onWeightScreen = YES;
@@ -421,8 +438,8 @@
 - (void) hideKeyboard{
     keyboard.frame = CGRectMake(SCREEN_WIDTH, keyboard.frame.origin.y, keyboard.frame.size.width, keyboard.frame.size.height);
     if (onWeightScreen) {
-        label.text = @"";
-        label.alpha = 0;
+        inputLabel.text = @"";
+        inputLabel.alpha = 0;
     }
     [button setTitle:@"Sub" forState:UIControlStateNormal];
     onWeightScreen = NO;
@@ -447,5 +464,56 @@
     }];
     [self showKeybord];
 }
+
+#pragma mark - Conditions check
+
+- (void) checkConditions{
+    switch ([diet.stage integerValue]){
+        case 1:
+            if ([self weeksLeft: 2]){
+                NSLog(@"Вы перешли на второй этап, дневная норма увеличина");
+                diet.checkDate = [NSDate date];
+                diet.stage = [NSNumber numberWithInt: 2];
+                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+3];
+            }
+            break;
+        case 2:
+            if ([self weeksLeft: 1]){
+                NSLog(@"Дневная норма увеличина");
+                diet.checkDate = [NSDate date];
+                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+3];
+            }
+            break;
+        case 3:
+            if ([self weeksLeft: 1]){
+                NSLog(@"Дневная норма увеличина");
+                diet.checkDate = [NSDate date];
+                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+6];
+            }
+            break;
+    }
+}
+
+-(BOOL) weeksLeft: (int) weeksNum {
+    return [self daysBetweenDate: diet.checkDate andDate: [NSDate date]] > 7 * weeksNum ? YES : NO;
+}
+
+ - (NSInteger)daysBetweenDate:(NSDate*)fromDateTime andDate:(NSDate*)toDateTime
+ {
+ NSDate *fromDate;
+ NSDate *toDate;
+ 
+ NSCalendar *calendar = [NSCalendar currentCalendar];
+ 
+ [calendar rangeOfUnit:NSDayCalendarUnit startDate:&fromDate
+ interval:NULL forDate:fromDateTime];
+ [calendar rangeOfUnit:NSDayCalendarUnit startDate:&toDate
+ interval:NULL forDate:toDateTime];
+ 
+ NSDateComponents *difference = [calendar components:NSDayCalendarUnit
+ fromDate:fromDate toDate:toDate options:0];
+ 
+ return [difference day];
+ }
 
 @end
