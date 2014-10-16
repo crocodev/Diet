@@ -23,6 +23,7 @@
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate>
 
 
+@property (strong, nonatomic) UITextField * debugTF;
 @property (strong, nonatomic) PNCircleChart * consumptionChart;
 @property (strong, nonatomic) PNCircleChart * progressChart;
 @property (strong, nonatomic) Diet * diet;

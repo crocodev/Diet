@@ -11,15 +11,14 @@
 
 @implementation InputViewController
 
-@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,inputLabel,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, diet, consumptionChart,progressChart, managedObjectContext , tapGR, stageLabel;
+@synthesize keyboard,alphaStep,foodTableView,searchBar,foods,inputLabel,button, foodsForSearch, onSearchScreen, selectedRowsIndexPathes, onWeightScreen, foodView, weightView, weightToAdd, diet, consumptionChart,progressChart, managedObjectContext , tapGR, stageLabel, debugTF;
 
 
 #pragma mark - Inicialize
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     // Добавляю индикатор подэкрана
     
     foodView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Test"]];
@@ -118,6 +117,29 @@
     tapGR.delegate = self;
     [self.view addGestureRecognizer:panGR];
     [self.view addGestureRecognizer:tapGR];
+    
+    // Debug
+    
+    UIButton * but = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [but addTarget:self action: @selector(debugDate:) forControlEvents:UIControlEventTouchUpInside];
+    [but setTitle:@"Date" forState:UIControlStateNormal];
+    [but setBackgroundColor: [UIColor redColor]];
+    but.frame = CGRectMake(100.0, 50.0, 40.0, 40.0);
+    [self.view addSubview:but];
+    
+    debugTF = [[UITextField alloc] initWithFrame:CGRectMake(0.0, 50.0, 80.0, 40.0)];
+    debugTF.backgroundColor = [UIColor redColor];
+    [self.view addSubview:debugTF];
+}
+
+- (void) debugDate: (UIButton *) sender{
+    NSString *dateString = debugTF.text;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSDate *dateFromString = [dateFormatter dateFromString:dateString];
+    diet.resetDate = dateFromString;
+    
+    [managedObjectContext save:nil];
 }
 
 -(void) viewWillAppear:(BOOL)animated{
@@ -468,6 +490,17 @@
 #pragma mark - Conditions check
 
 - (void) checkConditions{
+    
+    // Обнуление дневной нормы
+    
+    if ([self daysBetweenDate:[NSDate date] andDate: diet.resetDate] != 0){
+        int delta = [diet.dayPoints integerValue] - [consumptionChart.current  integerValue];
+        [consumptionChart growChartByAmount:[NSNumber numberWithInt: delta]];
+        diet.resetDate = [NSDate date];
+    }
+    
+    // Условия по прошествию "недель"
+    
     switch ([diet.stage integerValue]){
         case 1:
             if ([self weeksLeft: 2]){
@@ -492,6 +525,10 @@
             }
             break;
     }
+    
+    // Сохранить изменения
+    
+    [managedObjectContext save:nil];
 }
 
 -(BOOL) weeksLeft: (int) weeksNum {

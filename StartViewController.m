@@ -70,6 +70,7 @@
         diet.aimWeight = [NSNumber numberWithFloat: [aimWeight.text floatValue]*10];
         diet.startDate = [NSDate date];
         diet.checkDate = diet.startDate;
+        diet.resetDate = diet.startDate;
         [managedObjectContext save:nil];
         
         [self performSegueWithIdentifier:@"seg" sender:self];

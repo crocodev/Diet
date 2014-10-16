@@ -18,6 +18,7 @@
 @dynamic dayPoints;
 @dynamic restDayPoints;
 @dynamic startDate;
+@dynamic resetDate;
 @dynamic toPointsHistory;
 @dynamic toWeightHistory;
 @dynamic stage;
