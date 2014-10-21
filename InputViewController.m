@@ -337,7 +337,7 @@
     return [[PointsHistory alloc] initWithEntity: pointsHistoryDescription insertIntoManagedObjectContext: managedObjectContext];
 }
 
-#pragma mark - Other
+#pragma mark - UI methods
 
 - (void) buttonPushed: (UIButton *) sender{
     if ([inputLabel.text containsString:@"очков"]){
@@ -349,73 +349,6 @@
     // Сохранить изменения
     
     [managedObjectContext save:nil];
-}
-
-- (void) subPoints {
-    int delta = 0;
-    for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
-        PointsHistory * pointsHistory = [self pointsHistory];
-        pointsHistory.date = [NSDate date];
-        pointsHistory.foodName =[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
-        pointsHistory.points = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"];
-        pointsHistory.toDiet = diet;
-        
-        delta+=[pointsHistory.points integerValue];
-        [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
-    }
-    
-    // Обнуление лэйбл
-    
-    inputLabel.text = @"";
-    inputLabel.alpha = 0;
-    
-    // Обновление графика и остатка очков
-    
-    diet.restDayPoints = [NSNumber numberWithInt:[diet.restDayPoints integerValue] - delta];
-    [consumptionChart growChartByAmount:[NSNumber numberWithInt: - delta]];
-}
-
-- (void) addWeight {
-    WeightHistory * weightHistory = [self weightHistory];
-    weightHistory.date = [NSDate date];
-    weightHistory.weight = weightToAdd;
-    weightHistory.toDiet = diet;
-    
-    // Обновление графика и текущего веса
-    
-    [progressChart growChartByAmount:[NSNumber numberWithFloat: ([diet.currentWeight floatValue] - [weightToAdd floatValue])/10]];
-    diet.currentWeight = weightToAdd;
-    
-    [self selectLeftScreen];
-    
-    // Проверка условий
-    
-    switch ([diet.stage integerValue]){
-        case 1:
-            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
-                NSLog(@"Вы достигли цели и перешли на четвертый этап");
-                diet.stage = [NSNumber numberWithInt: 4];
-            }
-            break;
-        case 2:
-            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
-                NSLog(@"Вы достигли цели и перешли на четвертый этап");
-                diet.stage = [NSNumber numberWithInt: 4];
-            } else if ([diet.currentWeight floatValue] - [diet.aimWeight floatValue] <= ([diet.aimWeight floatValue] - [diet.startWeight floatValue]) * 30 / 100 ){
-                NSLog(@"Вы достигли цели и перешли на третий эиап, дневная норма увеличина");
-                diet.stage = [NSNumber numberWithInt: 3];
-                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+6];
-            } 
-            break;
-        case 3:
-            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
-                NSLog(@"Вы достигли цели и перешли на четвертый этап");
-                diet.stage = [NSNumber numberWithInt: 4];
-            } 
-            break;
-    }
-    
-    stageLabel.text = [diet.stage stringValue];
 }
 
 - (void) showSearchScreen{
@@ -487,7 +420,74 @@
     [self showKeybord];
 }
 
-#pragma mark - Conditions check
+#pragma mark - Data methods
+
+- (void) subPoints {
+    int delta = 0;
+    for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
+        PointsHistory * pointsHistory = [self pointsHistory];
+        pointsHistory.date = [NSDate date];
+        pointsHistory.foodName =[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"foodName"];
+        pointsHistory.points = [[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"];
+        pointsHistory.toDiet = diet;
+        
+        delta+=[pointsHistory.points integerValue];
+        [foodTableView deselectRowAtIndexPath:indexPath animated:NO];
+    }
+    
+    // Обнуление лэйбл
+    
+    inputLabel.text = @"";
+    inputLabel.alpha = 0;
+    
+    // Обновление графика и остатка очков
+    
+    diet.restDayPoints = [NSNumber numberWithInt:[diet.restDayPoints integerValue] - delta];
+    [consumptionChart growChartByAmount:[NSNumber numberWithInt: - delta]];
+}
+
+- (void) addWeight {
+    WeightHistory * weightHistory = [self weightHistory];
+    weightHistory.date = [NSDate date];
+    weightHistory.weight = weightToAdd;
+    weightHistory.toDiet = diet;
+    
+    // Обновление графика и текущего веса
+    
+    [progressChart growChartByAmount:[NSNumber numberWithFloat: ([diet.currentWeight floatValue] - [weightToAdd floatValue])/10]];
+    diet.currentWeight = weightToAdd;
+    
+    [self selectLeftScreen];
+    
+    // Проверка условий
+    
+    switch ([diet.stage integerValue]){
+        case 1:
+            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
+                NSLog(@"Вы достигли цели и перешли на четвертый этап");
+                diet.stage = [NSNumber numberWithInt: 4];
+            }
+            break;
+        case 2:
+            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
+                NSLog(@"Вы достигли цели и перешли на четвертый этап");
+                diet.stage = [NSNumber numberWithInt: 4];
+            } else if ([diet.currentWeight floatValue] - [diet.aimWeight floatValue] <= ([diet.aimWeight floatValue] - [diet.startWeight floatValue]) * 30 / 100 ){
+                NSLog(@"Вы достигли цели и перешли на третий эиап, дневная норма увеличина");
+                diet.stage = [NSNumber numberWithInt: 3];
+                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+6];
+            }
+            break;
+        case 3:
+            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
+                NSLog(@"Вы достигли цели и перешли на четвертый этап");
+                diet.stage = [NSNumber numberWithInt: 4];
+            }
+            break;
+    }
+    
+    stageLabel.text = [diet.stage stringValue];
+}
 
 - (void) checkConditions{
     
