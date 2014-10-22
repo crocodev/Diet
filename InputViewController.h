@@ -13,6 +13,7 @@
 #import "PointsHistory.h"
 #import "WeightHistory.h"
 #import "PNCircleChart.h"
+#import "NotificationView.h"
 
 #define ALPHA_MIN 0.4
 #define D_BETWEEN_IMAGES 10.0
@@ -20,7 +21,7 @@
 #define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
 
-@interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate>
+@interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate, NotificationViewDelegate>
 
 
 @property (strong, nonatomic) UITextField * debugTF;

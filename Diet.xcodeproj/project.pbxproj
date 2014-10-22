@@ -36,6 +36,7 @@
 		243DA59819D16F80005A3B51 /* Food.plist in Resources */ = {isa = PBXBuildFile; fileRef = 243DA59719D16F80005A3B51 /* Food.plist */; };
 		24A6CBB619D498FC003BE166 /* StartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24A6CBB519D498FC003BE166 /* StartViewController.m */; };
 		24E688A619D5704B00B41772 /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E688A519D5704B00B41772 /* TabBarController.m */; };
+		AFA34BA819F8228B00E02842 /* NotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = AFA34BA719F8228B00E02842 /* NotificationView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,8 @@
 		24A6CBB519D498FC003BE166 /* StartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartViewController.m; sourceTree = "<group>"; };
 		24E688A419D5704B00B41772 /* TabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
 		24E688A519D5704B00B41772 /* TabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarController.m; sourceTree = "<group>"; };
+		AFA34BA619F8228B00E02842 /* NotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationView.h; sourceTree = "<group>"; };
+		AFA34BA719F8228B00E02842 /* NotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,6 +285,7 @@
 				2437663519CAE0C4007A2E40 /* ZenKeyboard */,
 				2437658219CACE8A007A2E40 /* UICountingLabel */,
 				2437655E19CACAF7007A2E40 /* PNChart */,
+				AFA34BA919F8229100E02842 /* Notification */,
 			);
 			name = "3 part libs";
 			sourceTree = "<group>";
@@ -311,6 +315,15 @@
 				24E688A519D5704B00B41772 /* TabBarController.m */,
 			);
 			name = Tabbar;
+			sourceTree = "<group>";
+		};
+		AFA34BA919F8229100E02842 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				AFA34BA619F8228B00E02842 /* NotificationView.h */,
+				AFA34BA719F8228B00E02842 /* NotificationView.m */,
+			);
+			name = Notification;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -420,6 +433,7 @@
 				24047EC819CAA8E500521269 /* main.m in Sources */,
 				2437657A19CACAF7007A2E40 /* PNLineChart.m in Sources */,
 				2437657519CACAF7007A2E40 /* PNBar.m in Sources */,
+				AFA34BA819F8228B00E02842 /* NotificationView.m in Sources */,
 				2437657C19CACAF7007A2E40 /* PNLineChartDataItem.m in Sources */,
 				24A6CBB619D498FC003BE166 /* StartViewController.m in Sources */,
 				2437655019CAAAEA007A2E40 /* HelpViewController.m in Sources */,

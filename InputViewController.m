@@ -263,6 +263,27 @@
     }
 }
 
+#pragma mark - NotificationViewDelegate
+
+-(void) pressedButtoneWithTitle: (NSString *) title inNotificationView: (UIView *) view{
+    [view removeFromSuperview];
+    if ([title isEqualToString:@"+"]) {
+        diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+10];
+    } else if ([title isEqualToString:@"-"]) {
+        diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]-10];
+    }
+    
+    [managedObjectContext save:nil];
+    
+    [consumptionChart removeFromSuperview];    
+    consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 40, SCREEN_WIDTH/4, SCREEN_WIDTH/4) andTotal: diet.dayPoints andCurrent:diet.restDayPoints andClockwise:YES andShadow:YES];
+    consumptionChart.backgroundColor = [UIColor clearColor];
+    [consumptionChart setStrokeColor:PNGreen];
+    [consumptionChart strokeChart];
+    consumptionChart.userInteractionEnabled = YES;
+    [self.view addSubview:consumptionChart];
+}
+
 #pragma mark - Gesture Recognizers
 
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
@@ -316,12 +337,21 @@
 
 -(void) handleTapGesture:(UITapGestureRecognizer *) gestureRecognizer{
     if (CGRectContainsPoint(foodView.frame, [gestureRecognizer locationInView:self.view]) || CGRectContainsPoint(weightView.frame, [gestureRecognizer locationInView:self.view])) {
+        
+        // Переключение между подэкранами
+        
         if(onWeightScreen)
             [self selectLeftScreen];
         else
             [self selectRightScreen];
     } else if (CGRectContainsPoint(consumptionChart.frame, [gestureRecognizer locationInView:self.view])){
-        NSLog(@"manual change dayPoints");
+        
+        // Изменение дневной нормы вручную
+        
+        NotificationView * not = [[NotificationView alloc] initWithFrame: foodTableView.frame];
+        not.backgroundColor = [UIColor redColor];
+        not.delegate = self;
+        [self.view addSubview:not];
     }
 }
 
@@ -447,6 +477,9 @@
 }
 
 - (void) addWeight {
+    
+    // Добавление веса в историю
+    
     WeightHistory * weightHistory = [self weightHistory];
     weightHistory.date = [NSDate date];
     weightHistory.weight = weightToAdd;
@@ -456,29 +489,22 @@
     
     [progressChart growChartByAmount:[NSNumber numberWithFloat: ([diet.currentWeight floatValue] - [weightToAdd floatValue])/10]];
     diet.currentWeight = weightToAdd;
-    
     [self selectLeftScreen];
     
     // Проверка условий
-    
+
     switch ([diet.stage integerValue]){
-        case 1:
-            if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
-                NSLog(@"Вы достигли цели и перешли на четвертый этап");
-                diet.stage = [NSNumber numberWithInt: 4];
-            }
-            break;
         case 2:
             if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
                 NSLog(@"Вы достигли цели и перешли на четвертый этап");
                 diet.stage = [NSNumber numberWithInt: 4];
-            } else if ([diet.currentWeight floatValue] - [diet.aimWeight floatValue] <= ([diet.aimWeight floatValue] - [diet.startWeight floatValue]) * 30 / 100 ){
+            } else if ([diet.currentWeight floatValue] - [diet.aimWeight floatValue] <= ([diet.startWeight floatValue] - [diet.aimWeight floatValue]) * 30 / 100 ){
                 NSLog(@"Вы достигли цели и перешли на третий эиап, дневная норма увеличина");
                 diet.stage = [NSNumber numberWithInt: 3];
                 diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+6];
             }
             break;
-        case 3:
+        default:
             if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
                 NSLog(@"Вы достигли цели и перешли на четвертый этап");
                 diet.stage = [NSNumber numberWithInt: 4];
