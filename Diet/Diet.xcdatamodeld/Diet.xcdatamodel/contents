@@ -2,14 +2,14 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="13F34" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Diet" representedClassName="Diet" syncable="YES">
         <attribute name="aimWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="checkDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="currentWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="dayPoints" optional="YES" attributeType="Integer 16" defaultValueString="20" syncable="YES"/>
-        <attribute name="resetDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastUseDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="restDayPoints" optional="YES" attributeType="Integer 16" defaultValueString="20" syncable="YES"/>
         <attribute name="stage" optional="YES" attributeType="Integer 16" defaultValueString="1" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="startWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="weeksCheckDate" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="toPointsHistory" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PointsHistory" inverseName="toDiet" inverseEntity="PointsHistory" syncable="YES"/>
         <relationship name="toWeightHistory" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="WeightHistory" inverseName="toDiet" inverseEntity="WeightHistory" syncable="YES"/>
     </entity>

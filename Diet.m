@@ -18,10 +18,10 @@
 @dynamic dayPoints;
 @dynamic restDayPoints;
 @dynamic startDate;
-@dynamic resetDate;
+@dynamic lastUseDate;
 @dynamic toPointsHistory;
 @dynamic toWeightHistory;
 @dynamic stage;
-@dynamic checkDate;
+@dynamic weeksCheckDate;
 
 @end

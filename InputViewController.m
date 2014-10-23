@@ -137,7 +137,7 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
     NSDate *dateFromString = [dateFormatter dateFromString:dateString];
-    diet.resetDate = dateFromString;
+    diet.weeksCheckDate = dateFromString;
     
     [managedObjectContext save:nil];
 }
@@ -316,10 +316,14 @@
     
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
         if (foodView.alpha >= (1-ALPHA_MIN)/2 + ALPHA_MIN){
+            
             //Выбрано подменю блюд
+            
             [self selectLeftScreen];
         } else {
+            
             //Выбрано подменю веса
+            
             [self selectRightScreen];
         }
     }
@@ -507,10 +511,10 @@
     
     // Обнуление дневной нормы
     
-    if ([self daysBetweenDate:[NSDate date] andDate: diet.resetDate] != 0){
+    if ([self daysBetweenDate:[NSDate date] andDate: diet.lastUseDate] != 0){
         NSInteger delta = [diet.dayPoints integerValue] - [consumptionChart.current  integerValue];
         [consumptionChart growChartByAmount:[NSNumber numberWithInt: delta]];
-        diet.resetDate = [NSDate date];
+        diet.lastUseDate = [NSDate date];
     }
     
     // Условия по прошествию "недель"
@@ -520,21 +524,21 @@
             if ([self weeksLeft: 2]){
                 NSLog(@"Вы перешли на второй этап, дневная норма увеличина");
                 [self changeStageTo:2];
-                diet.checkDate = [NSDate date];
+                diet.weeksCheckDate = [NSDate date];
                 [self changeDayPointsByValue:3];
             }
             break;
         case 2:
             if ([self weeksLeft: 1]){
                 NSLog(@"Дневная норма увеличина");
-                diet.checkDate = [NSDate date];
+                diet.weeksCheckDate = [NSDate date];
                 [self changeDayPointsByValue:3];
             }
             break;
         case 3:
             if ([self weeksLeft: 1]){
                 NSLog(@"Дневная норма увеличина");
-                diet.checkDate = [NSDate date];
+                diet.weeksCheckDate = [NSDate date];
                 [self changeDayPointsByValue:6];
             }
             break;
@@ -564,25 +568,25 @@
 }
 
 -(BOOL) weeksLeft: (NSInteger) weeksNum {
-    return [self daysBetweenDate: diet.checkDate andDate: [NSDate date]] > 7 * weeksNum ? YES : NO;
+    return [self daysBetweenDate: diet.weeksCheckDate andDate: [NSDate date]] > 7 * weeksNum ? YES : NO;
 }
 
- - (NSInteger)daysBetweenDate:(NSDate*)fromDateTime andDate:(NSDate*)toDateTime
- {
- NSDate *fromDate;
- NSDate *toDate;
- 
- NSCalendar *calendar = [NSCalendar currentCalendar];
- 
- [calendar rangeOfUnit:NSDayCalendarUnit startDate:&fromDate
- interval:NULL forDate:fromDateTime];
- [calendar rangeOfUnit:NSDayCalendarUnit startDate:&toDate
- interval:NULL forDate:toDateTime];
- 
- NSDateComponents *difference = [calendar components:NSDayCalendarUnit
- fromDate:fromDate toDate:toDate options:0];
- 
- return [difference day];
+- (NSInteger)daysBetweenDate:(NSDate*)fromDateTime andDate:(NSDate*)toDateTime
+{
+    NSDate *fromDate;
+    NSDate *toDate;
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    [calendar rangeOfUnit:NSDayCalendarUnit startDate:&fromDate
+                 interval:NULL forDate:fromDateTime];
+    [calendar rangeOfUnit:NSDayCalendarUnit startDate:&toDate
+                 interval:NULL forDate:toDateTime];
+    
+    NSDateComponents *difference = [calendar components:NSDayCalendarUnit
+                                               fromDate:fromDate toDate:toDate options:0];
+    
+    return [difference day];
  }
 
 @end

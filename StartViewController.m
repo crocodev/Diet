@@ -69,8 +69,8 @@
         diet.currentWeight = diet.startWeight;
         diet.aimWeight = [NSNumber numberWithFloat: [aimWeight.text floatValue]*10];
         diet.startDate = [NSDate date];
-        diet.checkDate = diet.startDate;
-        diet.resetDate = diet.startDate;
+        diet.weeksCheckDate = diet.startDate;
+        diet.lastUseDate = diet.startDate;
         [managedObjectContext save:nil];
         
         [self performSegueWithIdentifier:@"seg" sender:self];
