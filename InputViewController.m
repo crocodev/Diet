@@ -149,8 +149,8 @@
 -(NSArray *) foods{
     foods = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Food" ofType:@"plist"]];
     
-    int section = 0;
-    int row = 0;
+    NSInteger section = 0;
+    NSInteger row = 0;
     
     NSMutableArray * buffer = [[NSMutableArray alloc] init];
     for (NSDictionary * dic in foods){
@@ -255,7 +255,7 @@
         inputLabel.text = [NSString stringWithFormat:@"%@ кг", string];
         weightToAdd = [NSNumber numberWithFloat:[string floatValue]*10];
     } else{
-        int i = 0;
+        NSInteger i = 0;
         for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
             i+= [(NSNumber*)[[[[foods objectAtIndex:indexPath.section] objectForKey:@"foods"] objectAtIndex:indexPath.row] objectForKey:@"points"] integerValue];
         }
@@ -268,20 +268,10 @@
 -(void) pressedButtoneWithTitle: (NSString *) title inNotificationView: (UIView *) view{
     [view removeFromSuperview];
     if ([title isEqualToString:@"+"]) {
-        diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+10];
+        [self changeDayPointsByValue:2];
     } else if ([title isEqualToString:@"-"]) {
-        diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]-10];
+        [self changeDayPointsByValue:-2];
     }
-    
-    [managedObjectContext save:nil];
-    
-    [consumptionChart removeFromSuperview];    
-    consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 40, SCREEN_WIDTH/4, SCREEN_WIDTH/4) andTotal: diet.dayPoints andCurrent:diet.restDayPoints andClockwise:YES andShadow:YES];
-    consumptionChart.backgroundColor = [UIColor clearColor];
-    [consumptionChart setStrokeColor:PNGreen];
-    [consumptionChart strokeChart];
-    consumptionChart.userInteractionEnabled = YES;
-    [self.view addSubview:consumptionChart];
 }
 
 #pragma mark - Gesture Recognizers
@@ -453,7 +443,7 @@
 #pragma mark - Data methods
 
 - (void) subPoints {
-    int delta = 0;
+    NSInteger delta = 0;
     for (NSIndexPath * indexPath in foodTableView.indexPathsForSelectedRows){
         PointsHistory * pointsHistory = [self pointsHistory];
         pointsHistory.date = [NSDate date];
@@ -497,22 +487,20 @@
         case 2:
             if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
                 NSLog(@"Вы достигли цели и перешли на четвертый этап");
-                diet.stage = [NSNumber numberWithInt: 4];
+                [self changeStageTo:4];
             } else if ([diet.currentWeight floatValue] - [diet.aimWeight floatValue] <= ([diet.startWeight floatValue] - [diet.aimWeight floatValue]) * 30 / 100 ){
                 NSLog(@"Вы достигли цели и перешли на третий эиап, дневная норма увеличина");
-                diet.stage = [NSNumber numberWithInt: 3];
-                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+6];
+                [self changeStageTo:3];
+                [self changeDayPointsByValue:6];
             }
             break;
         default:
             if ([diet.currentWeight floatValue] <= [diet.aimWeight floatValue]){
                 NSLog(@"Вы достигли цели и перешли на четвертый этап");
-                diet.stage = [NSNumber numberWithInt: 4];
+                [self changeStageTo:4];
             }
             break;
     }
-    
-    stageLabel.text = [diet.stage stringValue];
 }
 
 - (void) checkConditions{
@@ -520,7 +508,7 @@
     // Обнуление дневной нормы
     
     if ([self daysBetweenDate:[NSDate date] andDate: diet.resetDate] != 0){
-        int delta = [diet.dayPoints integerValue] - [consumptionChart.current  integerValue];
+        NSInteger delta = [diet.dayPoints integerValue] - [consumptionChart.current  integerValue];
         [consumptionChart growChartByAmount:[NSNumber numberWithInt: delta]];
         diet.resetDate = [NSDate date];
     }
@@ -531,23 +519,23 @@
         case 1:
             if ([self weeksLeft: 2]){
                 NSLog(@"Вы перешли на второй этап, дневная норма увеличина");
+                [self changeStageTo:2];
                 diet.checkDate = [NSDate date];
-                diet.stage = [NSNumber numberWithInt: 2];
-                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+3];
+                [self changeDayPointsByValue:3];
             }
             break;
         case 2:
             if ([self weeksLeft: 1]){
                 NSLog(@"Дневная норма увеличина");
                 diet.checkDate = [NSDate date];
-                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+3];
+                [self changeDayPointsByValue:3];
             }
             break;
         case 3:
             if ([self weeksLeft: 1]){
                 NSLog(@"Дневная норма увеличина");
                 diet.checkDate = [NSDate date];
-                diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue]+6];
+                [self changeDayPointsByValue:6];
             }
             break;
     }
@@ -557,7 +545,25 @@
     [managedObjectContext save:nil];
 }
 
--(BOOL) weeksLeft: (int) weeksNum {
+-(void) changeDayPointsByValue: (NSInteger) value{
+    diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue] + value];
+    [managedObjectContext save:nil];
+    
+    [consumptionChart removeFromSuperview];
+    consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 40, SCREEN_WIDTH/4, SCREEN_WIDTH/4) andTotal: diet.dayPoints andCurrent:diet.restDayPoints andClockwise:YES andShadow:YES];
+    consumptionChart.backgroundColor = [UIColor clearColor];
+    [consumptionChart setStrokeColor:PNGreen];
+    [consumptionChart strokeChart];
+    consumptionChart.userInteractionEnabled = YES;
+    [self.view addSubview:consumptionChart];
+}
+
+-(void) changeStageTo: (NSInteger) stage{
+    diet.stage = [NSNumber numberWithInt: stage];
+    stageLabel.text = [diet.stage stringValue];
+}
+
+-(BOOL) weeksLeft: (NSInteger) weeksNum {
     return [self daysBetweenDate: diet.checkDate andDate: [NSDate date]] > 7 * weeksNum ? YES : NO;
 }
 
