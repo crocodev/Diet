@@ -282,9 +282,9 @@
 		2437658319CACEA2007A2E40 /* 3 part libs */ = {
 			isa = PBXGroup;
 			children = (
+				2437655E19CACAF7007A2E40 /* PNChart */,
 				2437663519CAE0C4007A2E40 /* ZenKeyboard */,
 				2437658219CACE8A007A2E40 /* UICountingLabel */,
-				2437655E19CACAF7007A2E40 /* PNChart */,
 				AFA34BA919F8229100E02842 /* Notification */,
 			);
 			name = "3 part libs";

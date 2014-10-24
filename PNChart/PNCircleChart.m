@@ -62,6 +62,20 @@
     return self;
 }
 
+- (void)changeTotalByAmount: (NSNumber *) growAmount{
+    NSNumber *updatedValue = [NSNumber numberWithFloat:[_current floatValue] - [growAmount floatValue]];
+    
+    // Add animation
+    CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    pathAnimation.duration = self.duration;
+    pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    pathAnimation.fromValue = @([_current floatValue] / [_total floatValue]);
+    _total = @([_total floatValue]+[growAmount floatValue]);
+    _current = updatedValue;
+    pathAnimation.toValue = @([updatedValue floatValue] / [_total floatValue]);
+    _circle.strokeEnd   = [updatedValue floatValue] / [_total floatValue];
+    [_circle addAnimation:pathAnimation forKey:@"strokeEndAnimation"];
+}
 
 - (void)strokeChart
 {

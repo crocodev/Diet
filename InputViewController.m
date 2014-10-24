@@ -553,13 +553,7 @@
     diet.dayPoints = [NSNumber numberWithInt:[diet.dayPoints integerValue] + value];
     [managedObjectContext save:nil];
     
-    [consumptionChart removeFromSuperview];
-    consumptionChart = [[PNCircleChart alloc] initWithFrame:CGRectMake(0, 40, SCREEN_WIDTH/4, SCREEN_WIDTH/4) andTotal: diet.dayPoints andCurrent:diet.restDayPoints andClockwise:YES andShadow:YES];
-    consumptionChart.backgroundColor = [UIColor clearColor];
-    [consumptionChart setStrokeColor:PNGreen];
-    [consumptionChart strokeChart];
-    consumptionChart.userInteractionEnabled = YES;
-    [self.view addSubview:consumptionChart];
+    [consumptionChart changeTotalByAmount:@(value)];
 }
 
 -(void) changeStageTo: (NSInteger) stage{
