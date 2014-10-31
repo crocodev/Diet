@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UIViewController
+@interface SettingsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+
+@property (strong, nonatomic) UITableView * logTableView;      
+@property (strong, nonatomic) NSManagedObjectContext * managedObjectContext;
+@property (strong, nonatomic) Diet * diet;
+@property (strong, nonatomic) NSMutableArray * logData;
+@property (strong, nonatomic) NSMutableArray * logSections;
 
 @end

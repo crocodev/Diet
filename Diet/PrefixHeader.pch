@@ -13,7 +13,9 @@
 #import "AppDelegate.h"
 
 #define FERSTE_SART 
-#define FERSTE_TAB_ITEM 2
+#define FERSTE_TAB_ITEM 0
 
+#define SCREEN_WIDTH  [UIScreen mainScreen].bounds.size.width
+#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
 #endif

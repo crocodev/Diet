@@ -18,7 +18,6 @@
 #define ALPHA_MIN 0.4
 #define D_BETWEEN_IMAGES 10.0
 #define foodTableView_Y 200.0
-#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
 
 @interface InputViewController : UIViewController <ZenKeyboardDelegate, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate, NotificationViewDelegate>

@@ -36,6 +36,7 @@
 		243DA59819D16F80005A3B51 /* Food.plist in Resources */ = {isa = PBXBuildFile; fileRef = 243DA59719D16F80005A3B51 /* Food.plist */; };
 		24A6CBB619D498FC003BE166 /* StartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24A6CBB519D498FC003BE166 /* StartViewController.m */; };
 		24E688A619D5704B00B41772 /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E688A519D5704B00B41772 /* TabBarController.m */; };
+		AF001B2F1A03989200BBA687 /* LogTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AF001B2E1A03989200BBA687 /* LogTableViewCell.m */; };
 		AFA34BA819F8228B00E02842 /* NotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = AFA34BA719F8228B00E02842 /* NotificationView.m */; };
 /* End PBXBuildFile section */
 
@@ -109,6 +110,8 @@
 		24A6CBB519D498FC003BE166 /* StartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartViewController.m; sourceTree = "<group>"; };
 		24E688A419D5704B00B41772 /* TabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
 		24E688A519D5704B00B41772 /* TabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarController.m; sourceTree = "<group>"; };
+		AF001B2D1A03989200BBA687 /* LogTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogTableViewCell.h; sourceTree = "<group>"; };
+		AF001B2E1A03989200BBA687 /* LogTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogTableViewCell.m; sourceTree = "<group>"; };
 		AFA34BA619F8228B00E02842 /* NotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationView.h; sourceTree = "<group>"; };
 		AFA34BA719F8228B00E02842 /* NotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,6 +211,8 @@
 			children = (
 				2437654519CAAA91007A2E40 /* SettingsViewController.h */,
 				2437654619CAAA91007A2E40 /* SettingsViewController.m */,
+				AF001B2D1A03989200BBA687 /* LogTableViewCell.h */,
+				AF001B2E1A03989200BBA687 /* LogTableViewCell.m */,
 			);
 			name = "Settings screen";
 			sourceTree = "<group>";
@@ -453,6 +458,7 @@
 				2437658119CACE86007A2E40 /* UICountingLabel.m in Sources */,
 				24E688A619D5704B00B41772 /* TabBarController.m in Sources */,
 				241EE90B19D08EEA00769E7C /* Diet.m in Sources */,
+				AF001B2F1A03989200BBA687 /* LogTableViewCell.m in Sources */,
 				2437657E19CACAF7007A2E40 /* PNPieChartDataItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
