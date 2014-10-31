@@ -10,7 +10,7 @@
 
 @implementation SettingsViewController
 
-@synthesize logTableView, diet, managedObjectContext, logData, logSections;
+@synthesize logTableView, diet, managedObjectContext, sectionsTitles, dataDictionary;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -31,57 +31,70 @@
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:dietDescription];
     diet = [[managedObjectContext executeFetchRequest:fetchRequest error:nil] objectAtIndex:0];
+    [self loadData];
+}
+
+
+-(void) viewDidAppear:(BOOL)animated{
+    NSLog(@"1");
+    [logTableView reloadData];
+}
+
+-(void) loadData{
+    dataDictionary = [[NSMutableDictionary alloc] init];
     
+    // Объединение наборов
     
     NSMutableSet * set = [NSMutableSet setWithSet:diet.toPointsHistory];
     [set addObjectsFromArray:[diet.toWeightHistory allObjects]];
-    logData  = [NSMutableArray arrayWithArray: [set allObjects]];
+    NSMutableArray * logData  = [NSMutableArray arrayWithArray: [set allObjects]];
+    [logData sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]]];
     
-    NSSortDescriptor * sortByDate = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES];
-    [logData sortUsingDescriptors:@[sortByDate]];
+    // Массив дат
     
+    NSDateFormatter *formater = [[NSDateFormatter alloc] init];
+    [formater setDateFormat:@"dd.MM.yyyy"];
+    sectionsTitles = [[NSMutableArray alloc]init];
+    for(id object in logData){
+        [sectionsTitles addObject: [formater stringFromDate:[object date]]];
+    }
+    [sectionsTitles setArray:[[NSSet setWithArray:sectionsTitles] allObjects]];
     
+    // Заполнение словаря
+    
+    for (NSString * string in sectionsTitles){
+        NSMutableArray * array = [[NSMutableArray alloc]init];
+        for(id object in logData){
+            if ([string isEqualToString:[formater stringFromDate:[object date]]])
+                [array addObject:object];
+        }
+        [dataDictionary setValue:array forKey:string];
+    }
 }
-
 
 #pragma mark - UITableViewDelegate and UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    NSDateFormatter *formater = [[NSDateFormatter alloc] init];
-    [formater setDateFormat:@"dd.MM.yyyy"];
-    logSections = [[NSMutableArray alloc]init];
-    
-    for(id object in logData){
-        [logSections addObject: [formater stringFromDate:[object date]]];
-    }
-    [logSections setArray:[[NSSet setWithArray:logSections] allObjects]];
-//    logSections = [NSMutableArray arrayWithArray:[[logSections reverseObjectEnumerator] allObjects]];
-    return [logSections count];
+    return [dataDictionary count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSDateFormatter *formater = [[NSDateFormatter alloc] init];
-    [formater setDateFormat:@"dd.MM.yyyy"];
-    NSUInteger count = 0;
-    
-    for(id object in logData){
-        if([[formater stringFromDate:[object date]] isEqualToString:[logSections objectAtIndex:section]])
-            count++;
-    }
-    
-    
-    return count;
+    return [[dataDictionary valueForKey:[sectionsTitles objectAtIndex:section]] count];
 }
 
 -(NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-    return [logSections objectAtIndex:section];
+    return [sectionsTitles objectAtIndex:section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseID" forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor clearColor];
-    cell.textLabel.text = @"!!!";
     
+    id object = [[dataDictionary valueForKey:[sectionsTitles objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+    if ([object isKindOfClass:[PointsHistory class]]){
+        cell.textLabel.text = [(PointsHistory *)object foodName];
+    }else{
+        cell.textLabel.text = [NSString stringWithFormat:@"weight %f", [[(WeightHistory *)object weight] floatValue]/10];
+    }
     return cell;
 }
 
